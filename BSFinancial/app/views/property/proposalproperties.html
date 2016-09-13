@@ -1,0 +1,53 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline">
+            <h2>Proposal Property List</h2>
+        </div>
+    </div>
+
+    <div class="progress progress-striped active" data-ng-show="isBusy">
+        <div class="bar" style="width: 100%;"></div>
+    </div>
+
+    <div class="col-md-12 margin-bottom-20">
+        <a class="btn-u" ng-click="GetMapView()"><i class="fa fa-map-marker"></i> Map View</a>
+        <a class="btn-u" ng-click="GetGridView()"><i class="fa fa-table"></i> List View</a>
+    </div>
+
+    <div class="col-md-12" ng-show="mapView">
+        <!--<div class="margin-bottom-20">-->
+        <div class="col-md-12" id="map" style="height: 500px"></div>
+
+
+        <!--</div>-->
+    </div>
+    <div class="col-md-12" ng-show="gridView">
+        <div class="margin-bottom-40">
+            <table datatable="ng" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>#Id  </th>
+                        <th>Address</th>
+                        <th>Description</th>
+                        <th>Purchase Price</th>
+                        <th>Actions </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="p in properties">
+                        <td>{{ p.id }}</td>
+                        <td>{{ p.address }}</td>
+                        <td>{{ p.legalDescription }}</td>
+                        <td>{{ p.purchasePrice }}</td>
+                        <td>
+                            <a class="btn-u btn-u-blue" ng-click="SubmitViewInfo(p.id)"><i class="fa fa-edit"></i> Details</a>&nbsp;&nbsp;
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,23 @@
+﻿@model BSFinancial.Data.ContactModel
+@{
+    ViewBag.Title = "Inquiry Detail";
+}
+
+<h2>Inquiry Detail</h2>
+
+<div class="inquiries">
+    <div class="inquiry">
+        <div class="createdOn">@Model.CreatedOn </div>
+        <div class="name">@Model.Name</div>
+        <div class="loanType">@Model.LoanType</div>
+        <div class="propertyCost">@Model.PropertyCost</div>
+        <div class="email">@Model.Email</div>
+        <div class="phone">@Model.Phone</div>
+        <div class="currentAddress">@Model.CurrentAddress</div>
+        <div class="rentOwn">@Model.RentOwn</div>
+        <div class="monthlyRent">@Model.MonthlyRent</div>
+        <div class="employedBy">@Model.EmployedBy</div>
+        <div class="monthlyIncome">@Model.MonthlyIncome</div>
+        <div class="comments">@Model.Comments</div>
+    </div>
+</div>

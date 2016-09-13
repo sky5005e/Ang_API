@@ -1,0 +1,172 @@
+﻿<div class="row">
+    <div class="col-md-12" ng-hide="isModal">
+        <div class="headline"><h2>{{models.formTitle}}</h2></div>
+    </div>
+
+    <div class="col-md-12">
+        <form action="" id="applicantForm" name="applicantForm" class="sky-form">
+            <header>Please input applicant information</header>
+            <fieldset>
+
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">First name</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-user"></i>
+                            <input type="text" name="firstname" id="firstname" ng-model="applicant.firstName">
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">Last name</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-user"></i>
+                            <input type="text" name="lastname" id="lastname" ng-model="applicant.lastName">
+                        </label>
+                    </section>
+                </div>
+
+                <div class="row">
+                    <section class="col col-4">
+                        <label class="label">Date of Birth</label>
+                        <label class="input">
+                            <a href="javascript:(0);"><i class="icon-append fa fa-calendar" ng-click="open($event)"></i></a>
+                            <input type="text" class="form-control" name="birthday" id="birthday"
+                                   datepicker-popup="{{format}}"
+                                   ng-model="applicant.birthday"
+                                   is-open="opened"
+                                   min-date="minDate" max-date="'2014-12-30'"
+                                   datepicker-options="dateOptions"
+                                   close-text="Close" />
+                        </label>
+                    </section>  
+                    <section class="col col-8">
+                        <label class="label">SSN</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-asterisk"></i>
+                            <input type="text" name="ssn" id="ssn" ng-model="applicant.ssn">
+                        </label>
+                    </section>
+                </div>
+
+                <div class="row">
+                    <section class="col col-4">
+                        <label class="label">Email</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-envelope"></i>
+                            <input type="text" name="email" id="email" ng-model="applicant.email">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">Mobile</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-phone"></i>
+                            <input type="text" name="mobile" id="mobile" ng-model="applicant.mobile">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">Phone</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-phone"></i>
+                            <input type="text" name="phone" id="phone" ng-model="applicant.phone">
+                        </label>
+                    </section>
+                </div>
+            </fieldset>
+            <input type="hidden" id="id" name="id" ng-model="applicant.id" />
+            <footer>
+                <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="submitApplicant()">{{titleBtnSave}}</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#applicantForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        firstname:
+                        {
+                            required: true
+                        },
+                        lastname:
+                        {
+                            required: true
+                        },
+                        birthday:
+                        {
+                            required: true
+                            //date: true
+                        },
+                        ssn:
+                        {
+                            required: true
+                        },
+                        email:
+                        {
+                            required: false,
+                            email: true
+                        },
+                        mobile:
+                        {
+                            required: false
+                        },
+                        phone:
+                        {
+                            required: false
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        firstname:
+                        {
+                            required: 'Please enter first name'
+                        },
+                        lastname:
+                        {
+                            required: 'Please enter last name'
+                        },
+                        birthday:
+                        {
+                            required: 'Please enter date of birth'
+                        },
+                        ssn:
+                        {
+                            required: 'Please enter ssn'
+                        },
+                        mobile:
+                        {
+                            required: 'Please enter mobile number'
+                        },
+                        phone:
+                        {
+                            required: 'Please enter phone number'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

@@ -1,0 +1,59 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Invite User</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="inviteUserForm" class="sky-form">
+        <fieldset>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">User Email:</label>
+                    <label class="input">
+                        <input type="email" name="email" id="email" ng-model="registration.email" placeholder="Please enter user email"
+                               invalid-message="'Please input valid email'"
+                               required-message="'This is required'"
+                               required>
+                        <b class="tooltip tooltip-bottom-right">Needed to input email</b>
+                    </label>
+                </section>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="inviteNewUser()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#inviteUserForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        email:
+                        {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

@@ -1,0 +1,96 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Please Select Investors</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="newInvestorsForm" name="newInvestorsForm" class="sky-form">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Investors</th>
+                    <th></th>
+                    <th>Shares</th>
+                    <th>Amount Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="fi in fundInvestors">
+                    <td>
+                        <!--<select name="fullName"  ng-model="fi.selectedInvestorItem" class="selectedFundInvestor">
+                                    <option ng-repeat="invst in investors"  value="{{invst.id}}">{{invst.fullName}}</option>
+                                </select>-->
+
+                        <select name="fullName" class="selectedFundInvestor" ng-model="fi.selectedInvestorItem" ng-options="invst.fullName for invst in investors"></select><br>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" ng-click="goToNewInvestor(fi.rowId)">new</button></td>
+                    <td>
+                        <label class="input">
+                            <input type="text" class="short"  name="shares" id="shares" ng-model="fi.shares"></label>
+                    </td>
+                    <td>
+                        <label class="input">
+                            <input type="text" class="short" name="amountpaid" id="amountpaid" ng-model="fi.amountpaid"></label>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <div>
+        <button class="btn btn-primary" id="btnNew" ng-click="addNewFundInvestor()">+</button>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" id="btnSave" ladda="Saving" data-style="expand-right" ng-click="submitSelectedInvestor()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+<script type="text/javascript">
+
+    var Validation = function () {
+        $.validator.addMethod("valueNotEquals", function (value, element, arg) {
+            return arg != value;
+        }, "This field is required");
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newInvestorsForm").validate({
+                    // Rules for form validation
+                    rules:
+                     {
+                         fullName:
+                         {
+                             valueNotEquals: '?',
+                         },
+                         shares:
+                             {
+                                 required: true,
+                             },
+                         amountpaid:
+                     {
+                         required: true,
+                     }
+                     },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+
+
+        };
+    }();
+
+
+    Validation.initValidation();
+
+    //var asdf = $('#newInvestorsForm').find('[name="shares"]');
+    //$("#newInvestorsForm").validate('addField', asdf);
+
+</script>

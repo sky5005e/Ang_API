@@ -1,0 +1,72 @@
+﻿<form action="" id="newDocumentForm" name="newDocumentForm" class="sky-form" novalidate>
+    <div class="modal-body">
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong><h3 class="modal-title">Please upload document</h3></strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <label class="label">Description</label>
+                        <input type="text" name="description" id="principalAmt" ng-model="document.description" placeholder="description" class="form-control" ng-required="description">
+                        <label class="invalid" ng-show="showErrors && newDocumentForm.description.$invalid">
+                            Description Required
+                        </label>
+                    </div>
+                </div>  
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-8"> 
+                            <input type="file" file-model="myFile" class="btn btn-default"> 
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12 align-right">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="uploadFile(newDocumentForm)">{{titleBtnSave}}</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newDocumentForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        loan:
+                        {
+                            required: false,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>
+
+

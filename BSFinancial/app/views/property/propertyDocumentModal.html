@@ -1,0 +1,60 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">{{models.formTitle}}</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="newDocumentForm" name="newDocumentForm" class="sky-form">
+        <fieldset>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Description</label>
+                    <div>
+                        <input type="text" name="" id="description" ng-model="document.description" placeholder="description">
+                    </div>
+                    <br />
+                    <div class="btn btn-primary">
+                        <input type="file" file-model="myFile">
+                    </div>
+                </section>
+            </div>
+        </fieldset>
+        <input type="hidden" id="id" name="id" ng-model="property.id" />
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="uploadFile()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newDocumentForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        property:
+                        {
+                            required: false,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

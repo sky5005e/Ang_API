@@ -1,0 +1,488 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline"><h2>{{models.formTitle}}</h2></div>
+    </div>
+
+    <div class="col-md-12">
+        <form action="" id="loanForm" class="sky-form">
+            <header>
+                Please select application
+                <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-click="openNewAppDlg();"><i class="fa fa-plus"></i> Add application</button>
+                <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" ng-click="PrintInvoice(loan.id);"><i class="glyphicon icon-printer"></i> Loan Report</button>
+           </header>
+            <fieldset>
+                <div class="row">
+                    <section class="col col-md-12">
+                        <label class="label">Application Name</label>
+                        <label class="input">
+                            <ui-select ng-model="application.selected" name="application" id="application" theme="select2" class="form-control" on-select="showApplicants($item, $model)" ng-required>
+                                <ui-select-match placeholder="Select or search a application in the list..." value="{{$select.selected.id}}">{{$select.selected.applicationName}}  <small>&lt;applicant: {{$select.selected.mainApplicant.firstName}} {{$select.selected.mainApplicant.lastName}}&gt;</small></ui-select-match>
+                                <ui-select-choices repeat="item in applications | filter: $select.search">
+                                    <div ng-bind-html="item.applicationName | highlight: $select.search"></div>
+                                    <small>
+                                        main applicant: <span ng-bind-html="''+ item.mainApplicant.fullName | highlight: $select.search"></span> &nbsp;- &nbsp;
+                                        &lt;email: <span ng-bind-html="''+ item.mainApplicant.email | highlight: $select.search"></span>&gt;,&nbsp;
+                                        &lt;mobile: <span ng-bind-html="''+ item.mainApplicant.mobile | highlight: $select.search"></span>&gt;
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
+                        </label>
+
+                        <button ng-show="application.selected != null" class="btn-u rounded-2x btn-u-blue" type="button" ng-click="openApplicationDetail(application.selected);">Application detail</button>
+                    </section>
+                </div>
+            </fieldset>
+
+            <tabset justified="true">
+                <tab>
+                    <tab-heading>
+                        <i class="glyphicon icon-home"></i> Properties
+                    </tab-heading>
+                    <header>
+                        &nbsp;
+                        <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openSelPropertyDlg()"><i class="fa fa-plus"></i> Add Properties</button>
+                    </header>
+                    <fieldset>
+                        <div class="panel panel-grey margin-bottom-40">
+                            <div ng-show="emptyProperty">
+                                <div class="panel-body">
+                                    <p>There still doesn't exist any properties, after submit new loan then you can add properties.</p>
+                                </div>
+                            </div>
+                            <table class="table table-striped invoice-table" ng-hide="emptyProperty">
+                                <thead>
+                                    <tr>
+                                        <th>#Id  </th>
+                                        <th>Address</th>
+                                        <th>Description</th>
+                                        <th>Loan</th>
+                                        <th>Purchase Price</th>
+                                        <th>Date</th>
+                                        <th>Sale Price</th>
+                                        <th style="max-width:180px; width:180px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="p in loan.properties">
+                                        <td>{{ p.id }}</td>
+                                        <td>{{ p.address }}</td>
+                                        <td>{{ p.legalDescription }}</td>
+                                        <td>{{ p.loanId }}</td>
+                                        <td>{{ p.purchasePrice | currency }}</td>
+                                        <td>{{ p.purchaseDate  | date : yyyy/MM/dd  }}</td>
+                                        <td>{{ p.offerPrice | currency }}</td>
+                                        <td>
+                                            <a class="btn-u btn-u-blue" ng-click="onOpenPropertyDlg(p)"><i class="fa fa-edit"></i> Edit</a>&nbsp;&nbsp;
+                                            <a class="btn-u btn-u-default"
+                                               ng-bootbox-confirm="Are you sure you want to delete this property?"
+                                               ng-bootbox-confirm-action="deleteProperty(p)"
+                                               ng-bootbox-confirm-action-cancel="">
+                                                <i class="fa fa-trash-o"></i>Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
+                </tab>
+
+                <tab>
+                    <tab-heading>
+                        <i class="glyphicon glyphicon-briefcase"></i> Financial
+                    </tab-heading>
+                    <header>Please input loan information</header>
+                    <fieldset>
+
+                        <div class="row">
+                            <section class="col col-6">
+                                <label class="label">Principal</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-dollar"></i>
+                                    <input type="number" name="principal" id="principal" ng-model="loan.principal" ng-change="calcMonthlyPayment()">
+                                </label>
+                            </section>
+                            <section class="col col-6">
+                                <label class="label">Principal Balance</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-dollar"></i>
+                                    <input type="number" name="pbalance" id="pbalance" ng-model="loan.pbalance" readonly>
+                                </label>
+                            </section>
+                        </div>
+
+                        <div class="row">
+                            <section class="col col-4">
+                                <label class="label">Begin Date</label>
+                                <label class="input">
+                                    <a href="javascript:(0);"><i class="icon-append fa fa-calendar" ng-click="openBeginDate($event)"></i></a>
+                                    <input type="text" class="form-control" name="beginDate" id="beginDate"
+                                           datepicker-popup="{{format}}"
+                                           ng-model="loan.beginDate"
+                                           is-open="openedBeginDate"
+                                           datepicker-options="dateOptions"
+                                           close-text="Close" />
+
+                                </label>
+                            </section>
+                            <section class="col col-4">
+                                <label class="label">Maturity  Date</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-calendar"></i>
+                                    <a href="javascript:(0);"><i class="icon-append fa fa-calendar" ng-click="openMaturityDate($event)"></i></a>
+                                    <input type="text" class="form-control" name="maturityDate" id="maturityDate"
+                                           datepicker-popup="{{format}}"
+                                           ng-model="loan.maturityDate"
+                                           is-open="openedMaturityDate"
+                                           min-date="loan.beginDate"
+                                           datepicker-options="dateOptions"
+                                           close-text="Close" />
+                                </label>
+                            </section>
+                            <section class="col col-4">
+                                <label class="label">Months</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="months" id="months" ng-model="loan.months" ng-change="calcMonthlyPayment()">
+                                </label>
+                            </section>
+                        </div>
+
+                        <div class="row">
+                            <section class="col col-4">
+                                <label class="label">Rate</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="rate" id="rate" ng-model="loan.rate" ng-change="calcMonthlyPayment()">
+                                </label>
+                            </section>
+                            <section class="col col-4">
+                                <label class="label">Escrow Tax Amount</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="escrowTaxAmount" id="escrowTaxAmount" ng-model="loan.escrowTaxAmount" ng-change="calcMonthlyPayment()">
+                                </label>
+                            </section>
+                            <section class="col col-4">
+                                <label class="label">Escrow Ins Amount</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="escrowInsAmount" id="escrowInsAmount" ng-model="loan.escrowInsAmount" ng-change="calcMonthlyPayment()">
+                                </label>
+                            </section>
+                        </div>
+                        <div class="row">
+                            <section class="col col-6">
+                                <label class="label">Monthly Payment</label>
+                                {{ monthlyPayment | number : 2 }}
+                                <!--{{ loan.principal * (  (loan.rate / 100) * (1 - (loan.rate/100)) / ((1 + (loan.rate/100))-1)  )  | number:2 }}-->
+                            </section>
+                        </div>
+                        <div class="row">
+                            <section class="col col-6">
+                                <label class="label">Escrow Balance</label>
+                                {{ escrowBalanace | number : 2 }}
+                            </section>
+                        </div>
+                        
+                        
+                    </fieldset>
+                    <fieldset>
+                        <div class="row">
+                            <section class="col col-4">
+                                <label class="label">Equity</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="equity" id="equity" ng-model="loan.equity">
+                                </label>
+                            </section>
+                            <section class="col col-8"></section>
+                        </div>
+                        <div class="row">
+                            <section class="col col-4">
+                                <label class="label">Debt</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+                                    <input type="number" name="debt" id="debt" ng-model="loan.debt" />
+                                </label>
+                            </section>
+                            <section class="col col-4">
+
+                                <label class="label">Rate</label>
+                                <label class="input">
+                                    <i class="icon-append fa fa-asterisk"></i>
+
+                                    <input type="number" name="debtrate" id="debtrate" ng-model="loan.debtRate" />
+                                </label>
+
+                            </section>
+                            <section class="col col-4">
+                                <label class="checkbox top-margin-checkbox"><input type="checkbox" name="checkbox" ng-model="loan.variable"><i></i>Variable</label>
+                            </section>
+                        </div>
+                    </fieldset>
+
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="glyphicon glyphicon-usd"></i> Payments
+                    </tab-heading>
+                    <header>
+                        Payment list
+                        <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openPaymentDlg(null)"><i class="fa fa-plus"></i> Add Payment</button>
+                    </header>
+                    <fieldset>
+                        <div class="panel panel-grey margin-bottom-40 ">
+                            <div ng-show="emptyPayment">
+                                <div class="panel-body">
+                                    <p>There still doesn't exist any payment history, after submit new loan then you can add payment.</p>
+                                </div>
+                            </div>
+                            <table class="table table-striped invoice-table" ng-hide="emptyPayment">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Principal</th>
+                                        <th>Interest</th>
+                                        <th>Escrow</th>
+                                        <th style="max-width:180px; width:180px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="i in loan.payments">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{ i.payDate | date:'yyyy-MM-dd' }}</td>
+                                        <td>{{ i.totalAmt | currency }}</td>
+                                        <td>{{ i.principalAmt | currency }}</td>
+                                        <td>{{ i.interestAmt | currency }}</td>
+                                        <td>{{ i.escrowAmt | currency }}</td>
+                                        <td>
+                                            <a class="btn-u btn-u-blue" ng-click="openPaymentDlg(i)"><i class="fa fa-edit"></i> Edit</a>&nbsp;&nbsp;
+                                            <a class="btn-u btn-u-default"
+                                               ng-bootbox-confirm="Are you sure you want to delete this payment?"
+                                               ng-bootbox-confirm-action="deletePayment(i)"
+                                               ng-bootbox-confirm-action-cancel="">
+                                                <i class="fa fa-trash-o"></i>Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="glyphicon glyphicon-usd"></i> Escrow Disbursements
+                    </tab-heading>
+                    <header>
+                        Disbursements
+                        <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openDisbursementDlg(null)"><i class="fa fa-plus"></i> Add Disbursements</button>
+                    </header>
+                    <fieldset>
+                        <div class="panel panel-grey margin-bottom-40 ">
+                            <div ng-show="emptyDisbursement">
+                                <div class="panel-body">
+                                    <p>There still doesn't exist any disbursement history, after submit new loan then you can add disbursement.</p>
+                                </div>
+                            </div>
+                            <table class="table table-striped invoice-table" ng-hide="emptyDisbursement">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Payee</th>
+                                        <th>Amount</th>
+                                        <th style="max-width:180px; width:180px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="de in loan.disbursements">
+                                        <td>{{$index + 1}}</td>
+                                        <td>{{ de.payDate  | date : yyyy/MM/dd }}</td>
+                                        <td>{{ de.payee }}</td>
+                                        <td>{{ de.amount | currency }}</td>
+                                        <td>
+                                            <a class="btn-u btn-u-blue" ng-click="openDisbursementDlg(de)"><i class="fa fa-edit"></i> Edit</a>&nbsp;&nbsp;
+                                            <a class="btn-u btn-u-default"
+                                               ng-bootbox-confirm="Are you sure you want to delete this disbursements?"
+                                               ng-bootbox-confirm-action="deleteDisbursement(de)"
+                                               ng-bootbox-confirm-action-cancel="">
+                                                <i class="fa fa-trash-o"></i>Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </fieldset>
+                </tab>
+                <tab>
+                    <tab-heading>
+                        <i class="glyphicon icon-docs"></i> Documents
+                    </tab-heading>
+                    <header>
+                        &nbsp;
+                        <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openDocumentDlg()"><i class="fa fa-plus"></i> Add Documents</button>
+                    </header>
+                    <fieldset>
+                            <div class="panel panel-grey margin-bottom-40">
+                                <div ng-show="emptyDocument">
+                                    <div class="panel-body">
+                                        <p>There still doesn't exist any documents, after submit new loan then you can add documents.</p>
+                                    </div>
+                                </div>
+                                <table class="table table-striped invoice-table" ng-hide="emptyDocument">
+                                    <thead>
+                                        <tr>
+                                            <th>#Id  </th>
+                                            <th>Description</th>
+                                            <th>Loan</th>
+                                            <th>download</th>
+                                            <th style="max-width:180px; width:180px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="d in loan.documents">
+                                            <td>{{ d.id }}</td>
+                                            <td>{{ d.description }}</td>
+                                            <td>{{ d.loanId }}</td>
+                                            <td> <a target="_self" href="{{d.filePath}}" download="{{d.description}}"> <i class="glyphicon icon-docs"></i></a></td>
+                                            <td>
+                                                <a class="btn-u btn-u-default"
+                                                   ng-bootbox-confirm="Are you sure you want to delete this document?"
+                                                   ng-bootbox-confirm-action="deleteDocument(d)"
+                                                   ng-bootbox-confirm-action-cancel="">
+                                                    <i class="fa fa-trash-o"></i>Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </fieldset>
+                </tab>
+
+            </tabset>
+
+            <input type="hidden" id="id" name="id" ng-model="loan.id" />
+            <footer>
+                <button type="button" ladda="submitting" data-style="expand-right" ng-click="submitLoan()" ng-disabled="sending" class="btn-u btn-brd rounded btn-u-sea"><i class="fa fa-check"></i> {{models.btnSubmitTitle}}</button>
+                <button class="btn-u btn-brd rounded btn-u-default btn-u-sm" type="button" onclick="window.history.back();"><i class="fa fa-mail-reply"></i> Back</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#loanForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        application:
+                        {
+                            required: true,
+                        },
+                        principal:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        beginDate:
+                        {
+                            required: true,
+                            //date: true
+                        },
+                        maturityDate:
+                        {
+                            required: true,
+                            date: true
+                        },
+                        months:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        rate:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        escrowTaxAmount:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        escrowInsAmount:
+                        {
+                            required: true,
+                            number: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        application:
+                        {
+                            required: 'Please select application'
+                        },
+                        principal:
+                        {
+                            required: 'Please enter something'
+                        },
+                        beginDate:
+                        {
+                            required: 'Please enter some date'
+                        },
+                        maturityDate:
+                        {
+                            required: 'Please enter some date'
+                        },
+                        months:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        rate:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        escrowTaxAmount:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        escrowInsAmount:
+                        {
+                            required: 'Please enter some number'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

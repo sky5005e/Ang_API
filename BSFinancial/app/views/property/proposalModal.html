@@ -1,0 +1,99 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Add Proposal</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="ProposalForm" class="sky-form">
+        <fieldset>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Select Prospect:</label>
+                    <label class="input">
+                        <ui-select multiple class="form-control" ng-model="dlg.selectedProspectList" close-on-select="true">
+                            <ui-select-match placeholder="Select prospects...">{{$item.firstName}} {{$item.lastName}}  </ui-select-match>
+                            <ui-select-choices repeat="proposal in prospects | propsFilter: {firstName: $select.search, email: $select.search}">
+                                <div ng-bind-html="proposal.firstName | highlight: $select.search"></div>
+                                <small>
+                                    Prospect: {{proposal.firstName}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Select Agent:</label>
+                    <label class="input">
+                        <ui-select multiple class="form-control" ng-model="dlg.selectedUserList" close-on-select="true">
+                            <ui-select-match placeholder="Select users...">{{$item.firstName}} {{$item.lastName}}  </ui-select-match>
+                            <ui-select-choices repeat="user in users | propsFilter: {firstName: $select.search, lastName: $select.search}">
+                                <div ng-bind-html="user.firstName | highlight: $select.search"></div>
+                                <small>
+                                    Agents: {{user.firstName}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Proposal For:</label>
+                    <label class="input">
+                        <select class="form-control" id="proposalFor" name="proposalFor" ng-model="proposal.proposalFor">
+                            <option value="Sale">Sale</option>
+                            <option value="Lease">Lease</option>
+                        </select>
+                    </label>
+                </section>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+   <!-- <button class="btn btn-sky" style="float:left" id="btnAddNew" ng-click="goToNewProposal()"><i class="fa fa-plus"></i> Add New Proposal</button>-->
+    <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitSelectedProspects()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#ProposalForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        proposal:
+                        {
+                            required: true,
+                        },
+                        user:
+                        {
+                            required: true,
+                        },
+                        proposalFor:
+                        {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

@@ -1,0 +1,48 @@
+﻿<section class="Sign-up col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6  col-sm-offset-3 col-xs-10  col-xs-offset-1">
+    <div class="signUp-header">
+        <div class="bigicon">
+            <span class="pe-7s-user"></span>
+        </div>
+        <div class="heading">
+            <h1>Login</h1>
+            <p>Don't have account? Click here to <a href="#signup" data-dismiss="modal" type="button">Register</a></p>
+        </div>
+    </div> <!-- modal-header -->
+    <div class="signUp-body">
+        <!-- form -->
+        <form class="cd-form floating-labels" angular-validator angular-validator-submit="login()" name="loginForm">
+            <fieldset>
+                <div class="icon">
+                    <span class="pe-7s-mail"></span>
+                    <label class="cd-label" for="cd-email" ng-class="{'float':(loginData.userName != '' && loginData.userName != undefined)}">Email</label>
+                    <input type="text" id="email" name="email"
+                           ng-model="loginData.userName"
+                           invalid-message="'Please input valid email'"
+                           required />
+                </div>
+                <div class="icon">
+                    <span class="pe-7s-lock"></span>
+                    <label class="cd-label" for="cd-password" ng-class="{'float':(loginData.password != '' && loginData.password != undefined)}">Password</label>
+                    <input type="password"
+                           data-ng-model="loginData.password" required>
+                </div>
+
+                <p class="reset-password"> Forget your password ? <a href="#">click here to reset</a></p>
+
+                <div class="check-box">
+                    <input type="checkbox" id="cd-checkbox-1" data-ng-model="loginData.useRefreshTokens" />
+                    <label for="cd-checkbox-1">Stay signed in</label>
+                </div>
+
+                <div class="submit-btn">
+                    <input data-dismiss="modal" type="submit" value="SIGN IN">
+                </div>
+            </fieldset>
+
+            <div class="alert alert-danger" ng-show="hasError">
+                {{message}}
+            </div>
+
+        </form>
+    </div> <!-- model body -->
+</section>

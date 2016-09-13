@@ -1,0 +1,65 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Please Select applicants</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="newAppForm" name="newAppForm" class="sky-form">
+        <fieldset>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Applicant List</label>
+                    <label class="input">
+                        <ui-select multiple class="form-control" ng-model="dlg.selectedList" close-on-select="true">
+                            <ui-select-match placeholder="Select person...">{{$item.firstName}} {{$item.lastName}} &lt;{{$item.email}}&gt;</ui-select-match>
+                            <ui-select-choices repeat="person in applicants | propsFilter: {firstName: $select.search, lastName: $select.search}">
+                                <div ng-bind-html="person.fullName | highlight: $select.search"></div>
+                                <small>
+                                    email: {{person.email}}
+                                    mobile: <span ng-bind-html="''+person.mobile | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                </section>
+            </div>
+        </fieldset>
+        <input type="hidden" id="id" name="id" ng-model="application.id" />
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-sky" style="float:left" id="btnAddNew" ng-click="goToNewApp()"><i class="fa fa-plus"></i> Add New</button>
+    <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitSelectedApp()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newAppForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        applicant:
+                        {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

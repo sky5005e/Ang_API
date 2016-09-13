@@ -1,0 +1,101 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline"><h2>Proposal</h2></div>
+    </div>
+
+    <div class="progress progress-striped active" data-ng-show="isBusy">
+        <div class="bar" style="width: 100%;"></div>
+    </div>
+
+    
+    <div class="col-md-12">
+        <form action="" id="proposalForm" name="proposalForm" class="sky-form">
+            <fieldset>
+                <div class="row">
+                    <section class="col col-sm-6">
+                        <label class="label">Select Prospects: {{proposal.prospects}}</label>
+                        <!--<label class="input">
+                            <input type="text" name="prospects" id="prospects" ng-model="proposal.prospects">
+                        </label>-->
+                    </section>
+                    
+                </div>
+                <div class="row">
+                    <section class="col col-sm-6">
+                        <label class="label">Select Agents: {{proposal.agents}}</label>
+                        <!--<label class="input">
+                            <input type="text" name="agents" id="agents" ng-model="proposal.agents">
+                        </label>-->
+                    </section>
+                     
+                    </div>
+                <div class="row">
+
+                    <section class="col col-sm-6">
+                        <label class="label">Proposal For: {{ proposal.proposalFor }}</label>
+                        <!--<label class="input">
+                            <input type="text" name="proposalFor" id="proposalFor" ng-model="proposal.proposalFor">
+                        </label>-->
+                    </section>
+                    
+                </div>
+                <div class="row">
+                    <section class="col col-sm-6">
+                        <label class="label">Last Viewed:</label>
+                        <label class="label">{{proposal.lastViewedDate}}</label>
+                    </section>
+                </div>
+                <div class="row">
+                    <section class="col col-sm-6">
+                        <label class="input">
+                            <a class="btn btn-primary" data-style="expand-right" ng-click="viewAnalytics(proposal.proposalId)">Property Views</a>
+                        </label>
+                    </section>
+                </div>
+            </fieldset>
+            <div class="col-md-12 margin-bottom-20">
+                <a ng-click="openSelPropertyDlg();" class="btn-u"><i class="fa fa-plus"></i> Add Property</a>
+            </div>
+
+            <div class="margin-bottom-40">
+                <table class="table table-striped invoice-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Address</th>
+                            <th>Sq feet</th>
+                            <th>Lot Size</th>
+                            <th>Rating</th>
+                            <th style="max-width:180px; width:180px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="p in properties">
+                            <td>{{ p.legalDescription }}</td>
+                            <td>{{ p.address }}</td>
+                            <td>{{ p.buildSquareFt }}</td>
+                            <td>{{ p.lotSquareFt }}</td>
+                            <td>{{ p.rating }}</td>
+                            <td>
+                                <a class="btn-u btn-u-blue" href="/#/editproperty/{{p.id}}"><i class="fa fa-edit"></i> Edit</a>&nbsp;&nbsp;
+                                <a class="btn-u btn-u-default"
+                                   ng-bootbox-confirm="Are you sure you want to delete this property?"
+                                   ng-bootbox-confirm-action="deleteProperty(p)"
+                                   ng-bootbox-confirm-action-cancel="">
+                                    <i class="fa fa-trash-o"></i>Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <input type="hidden" id="id" name="id" ng-model="proposal.proposalId" />
+            <footer>
+                <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="submitProposal()">{{titleBtnSave}}</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </footer>
+</form>
+</div>
+</div>

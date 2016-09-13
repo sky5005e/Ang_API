@@ -1,0 +1,12 @@
+﻿@model IEnumerable<BSFinancial.Data.ContactModel>
+@{
+    ViewBag.Title = "Inquiry List";
+}
+    ViewBag.InitModule = "inquiryIndex";
+}
+
+@section scripts{
+    <script src="~/app/services/inquiryService.js"></script>
+    <script src="~/app/controllers/inquiryController.js"></script>
+
+<div data-ng-view=""></div>

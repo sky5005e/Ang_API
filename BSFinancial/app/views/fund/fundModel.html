@@ -1,0 +1,69 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Enter Fund Name</h3>
+</div>
+<div class="modal-body">
+    <form action="" id="FundForm" class="sky-form">
+        <fieldset>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Fund Name:</label>
+                    <label class="input">
+                        <input type="text" name="fundName" id="fundName" ng-model="fund.fundName" placeholder="Please enter fund name" required-message="'This is required'" required>
+                        <b class="tooltip tooltip-bottom-right">The fund name is a required.</b>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-md-12">
+                    <label class="label">Tax Id:</label>
+                    <label class="input">
+                        <input type="text" name="taxId" id="taxId" ng-model="fund.taxId" placeholder="Please enter tax Id" required-message="'This is required'" required>
+                        <b class="tooltip tooltip-bottom-right">The fund tax number is required.</b>
+                    </label>
+                </section>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="createFund()">{{titleBtnSave}}</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#FundForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        fundName:
+                        {
+                            required: true,
+                        },
+                        taxId:
+                        {
+                            required: false,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

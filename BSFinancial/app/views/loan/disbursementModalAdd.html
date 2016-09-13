@@ -1,0 +1,140 @@
+﻿
+<form action="" id="disbursementForm" class="sky-form"> 
+    <div class="modal-body">
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong>
+                    <span class="ti ti-calendar"></span>&nbsp;Add disbursement
+                </strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Date</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input type="text" name="payDate" id="payDate"
+                                   placeholder="Payment date"
+                                   ng-focus="openPaymentDate($event)"
+                                   datepicker-popup="{{format}}"
+                                   ng-model="disbursement.payDate"
+                                   is-open="openedPaymentDate"
+                                   min-date="minDate"
+                                   datepicker-options="dateOptions"
+                                   close-text="Close" />
+                            <b class="tooltip tooltip-bottom-right">Needed to select payment date</b>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Payee</label>
+                        <label class="input">
+                            <input type="text" name="payee" id="payee" ng-model="disbursement.payee" placeholder="Payee">
+                            <b class="tooltip tooltip-bottom-right">payee</b>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Amount</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-dollar"></i>
+                            <input type="number" name="amount" id="amount" ng-model="disbursement.amount" ng-change="calcEscrow()" placeholder="Amount">
+                            <b class="tooltip tooltip-bottom-right">Amount</b>
+                        </label>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Escrow </label>
+                        <label class="label">
+                            <i class="icon-append fa fa-dollar"></i>
+                            {{disbursement.escrowAmt}}
+                            <b class="tooltip tooltip-bottom-right">Amount to Escrow</b>
+                        </label>
+                     
+                    </div>
+                </div>
+                <input type="hidden" id="loanId" name="loanId" ng-model="disbursement.loanId" />
+                <input type="hidden" id="id" name="id" ng-model="disbursement.id" />
+                <div class="divider">
+                </div>
+                
+
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitDisbursement()">{{titleBtnSave}}</button>
+        <input type="button" class="btn btn-danger" ng-click="cancel()" value="Cancel">
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#disbursementForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        payDate:
+                        {
+                            required: true,
+                        },
+                        payee:
+                        {
+                            required: true
+                        },
+                        amount:
+                        {
+                            required: true,
+                            number: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        payDate:
+                        {
+                            required: 'Please enter some date'
+                        },
+                        payee:
+                        {
+                            required: 'Please enter payee'
+                        },
+                        amount:
+                        {
+                            required: 'Please enter some number'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>
+
+

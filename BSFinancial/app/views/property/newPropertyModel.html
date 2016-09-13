@@ -1,0 +1,227 @@
+﻿
+<form action="" id="propertyForm" name="propertyForm" class="sky-form">
+    <div class="modal-body">
+        <div class="col-md-12" ng-hide="isModal">
+            <div class="headline"><h2>{{models.formTitle}}</h2></div>
+        </div>
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong>
+                    <span class="ti ti-calendar"></span>&nbsp;Please input property information
+                </strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Legal Description</label>
+                        <textarea rows="2" class="form-control" id="legalDescription" name="legalDescription"
+                                  ng-model="property.legalDescription"></textarea>
+                    </div>
+
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Address</label>
+                        <textarea rows="2" class="form-control" id="address" name="address"
+                                  ng-model="property.address"></textarea>
+                    </div> 
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="label">City</label>
+                        <input type="text" name="city" id="city" ng-model="property.city" class="form-control">
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="label">State</label>
+                        <input type="text" name="state" id="state" ng-model="property.state" class="form-control">
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="label">Zip</label>
+                        <input type="text" name="zip" id="zip" ng-model="property.zip" class="form-control">
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="label">Purchase Price</label>
+                        <label class="input">
+                            <input type="number" name="purchaseprice" id="purchaseprice" ng-model="property.purchasePrice">
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="label">Date</label>
+                        <label class="input">
+                            <a href="javascript:(0);"><i class="icon-append fa fa-calendar" ng-click="openPurchaseDate($event)"></i></a>
+                            <input type="text" class="form-control" name="purchasedate" id="purchasedate"
+                                   datepicker-popup="{{format}}"
+                                   ng-model="property.purchaseDate"
+                                   is-open="openedPurchaseDate"
+                                   min-date="minDate"
+                                   datepicker-options="dateOptions"
+                                   close-text="Close" />
+                        </label>
+                    </div>
+                     
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="label">Sale Price</label>
+                        <label class="input">
+                            <input type="number" name="offerprice" id="offerprice" ng-model="property.offerPrice">
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="label">Date</label>
+                        <label class="input">
+                            <a href="javascript:(0);"><i class="icon-append fa fa-calendar" ng-click="openSaleDate($event)"></i></a>
+                            <input type="text" class="form-control" name="offerdate" id="offerdate"
+                                   datepicker-popup="{{format}}"
+                                   ng-model="property.offerDate"
+                                   is-open="openedSaleDate"
+                                   min-date="minDate"
+                                   datepicker-options="dateOptions"
+                                   close-text="Close" />
+                        </label>
+                    </div>
+
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12 align-right">
+                        <input type="button" value="Submit" class="btn btn-primary btn-sm" ng-click="click(form1);" />
+                    </div>
+                </div>
+                <input type="hidden" id="id" name="id" ng-model="property.id" />
+                <input type="hidden" id="loanId" name="loanId" ng-model="property.loanId" />
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="submitNewProperty()">{{titleBtnSave}}</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+
+</form>
+
+
+
+
+
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#propertyForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        legalDescription:
+                        {
+                            required: false
+                        },
+                        address:
+                        {
+                            required: true
+                        },
+                        city:
+                        {
+                            required: true,
+                        },
+                        state:
+                        {
+                            required: true
+                        },
+                        zip:
+                        {
+                            required: false
+                        },
+                        purchaseprice:
+                        {
+                            required: false,
+                            number: true
+                        },
+                        purchasedate:
+                        {
+                            required: false,
+                            date: true
+                        },
+                        offerprice:
+                        {
+                            required: false,
+                            number: true
+                        },
+                        offerdate:
+                        {
+                            required: false,
+                            date: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        legalDescription:
+                        {
+                            required: 'Please enter legal description'
+                        },
+                        address:
+                        {
+                            required: 'Please enter address'
+                        },
+                        city:
+                        {
+                            required: 'Please enter city'
+                        },
+                        state:
+                        {
+                            required: 'Please enter state name'
+                        },
+                        zip:
+                        {
+                            required: 'Please enter zip code'
+                        },
+                        purchaseprice:
+                        {
+                            required: 'Please enter purchase price'
+                        },
+                        purchasedate:
+                        {
+                            required: 'Please enter purchase date'
+                        },
+                        offerprice:
+                        {
+                            required: 'Please enter sale price'
+                        },
+                        offerdate:
+                        {
+                            required: 'Please enter sale date'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        console.log(element);
+                        error.insertAfter(element);
+                    }
+               });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

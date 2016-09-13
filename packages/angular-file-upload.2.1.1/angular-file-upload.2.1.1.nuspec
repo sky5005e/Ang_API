@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>angular-file-upload</id>
+    <version>2.1.1</version>
+    <title>Angular file upload</title>
+    <authors>Danial Farid,  Georgios Diamantopoulos (nuget package)</authors>
+    <owners>Danial Farid,  Georgios Diamantopoulos (nuget package)</owners>
+    <licenseUrl>https://github.com/danialfarid/angular-file-upload/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/danialfarid/angular-file-upload</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Light-weight HTML5 and cross-browser AngularJS directives for file upload, progress, abort, drag and drop</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>angularjs upload</tags>
+  </metadata>
+</package>

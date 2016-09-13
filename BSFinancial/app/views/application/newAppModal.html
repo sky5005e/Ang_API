@@ -1,0 +1,77 @@
+﻿<form action="" id="newAppForm" class="sky-form">
+    <div class="modal-body">
+
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong>
+                    <span class="ti ti-calendar"></span>&nbsp;Please enter application name
+                </strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Application Name</label>
+                        <label class="input">
+                            <input type="text" name="applicationName" id="applicationName" ng-model="application.applicationName" placeholder="Please enter application name">
+                            <b class="tooltip tooltip-bottom-right">Needed to input name</b>
+                        </label>
+                    </div>
+
+                </div>
+                <input type="hidden" id="id" name="id" ng-model="application.id" />
+                <div class="divider"></div>
+                
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitNewApp()">{{titleBtnSave}}</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+
+</form>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newAppForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        applicationName:
+                        {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

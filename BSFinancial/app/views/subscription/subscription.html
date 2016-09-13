@@ -1,0 +1,157 @@
+﻿<style>
+    .upgrade-btn {
+        background: #0094ff;
+        color: #fff;
+        border: none;
+        padding: 5px 20px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .footer-color {
+        background: none;
+    }
+    .selected {
+        border: solid 1px black;
+    }
+</style>
+
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <!-- <div class="headline">
+            <h2>Upgrade</h2>
+        </div>-->
+    </div>
+    <div class="col-md-12 text-center" ng-show="upgrade" >
+        <h1>Upgrade Plan</h1>
+        <br />
+        <h3>You have reached the limit of your subscription and cannot add any more loans.</h3>
+        <br />
+        <br />
+        <h3>Please click Upgrade to upgrade your subscription and continue taking advantage of
+            All the benefits.
+        </h3>
+        <br />
+        <input type="submit" class="upgrade-btn" value="Upgrade" ng-click="GetCompanyPlans()" />
+    </div>
+    <div class="col-md-12" ng-show="companyPlans">
+        <section id="section3" class="pricing container">
+            <div class="heading col-lg-12">
+                <h1>Pricing</h1>
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-lg-12">
+                <div id="divPlan1" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <div class="p_box">
+                        <div class="header">
+                            <h1>THE FREE PLAN </h1>
+                            <p>1 Loan</p>
+                        </div>
+                        <div class="body">
+                            <h3>Rules: </h3>
+                            <p>-Setup Loan</p>
+                            <p>-Additional Loans</p>
+                            <p>-Require Upgrade</p>
+                        </div>
+                        <div class="footer footer-color">
+
+                            <div class="footer footer-color">
+                                <div data-ng-show="plan1Upgrade">
+                                    <button type="submit" class="upgrade-btn" data-ng-click="Upgrade('Free')">Upgrade</button>
+                                </div>
+                                <div data-ng-show="plan1Downgrade">
+                                    <button type="submit" class="upgrade-btn" data-ng-click="Downgrade('Free')">Downgrade</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divPlan2" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="p_box">
+                    <div class="header">
+                        <h1>PLAN 2</h1>
+                        <p>5 Loan</p>
+                    </div>
+                    <div class="body">
+                        <h3>Rules: </h3>
+                        <p>-Setup 5 Loan</p>
+                        <p>-Additional Loans</p>
+                        <p>-Require Upgrade</p>
+                    </div>
+
+                    <div class="footer footer-color">
+                        <div data-ng-show="plan2Upgrade">
+                            <button type="submit" class="upgrade-btn" data-ng-click="Upgrade('Plan2')">Upgrade</button>
+                        </div>
+                        <div data-ng-show="plan2Downgrade">
+                            <button type="submit" class="upgrade-btn" data-ng-click="Downgrade('Plan2')">Downgrade</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <div id="divPlan3" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="p_box">
+            <div class="header">
+                <h1>PLAN 3</h1>
+                <p>50 Loan</p>
+            </div>
+            <div class="body">
+                <h3>Rules: </h3>
+                <p>-Setup 50 Loan</p>
+                <p>-Additional Loans</p>
+                <p>-Require Upgrade</p>
+                <!--<p>-$ amount linked to</p>-->
+            </div>
+            <div class="footer footer-color">
+                <div data-ng-show="plan3Upgrade">
+                    <button type="submit" class="upgrade-btn" data-ng-click="Upgrade('Plan3')">Upgrade</button>
+                </div>
+                <div data-ng-show="plan3Downgrade">
+                    <button type="submit" class="upgrade-btn" data-ng-click="Downgrade('Plan3')">Downgrade</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+                <div id="divPlan4" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="p_box">
+            <div class="header">
+                <h1>PLAN 4</h1>
+                <p>Unlimited</p>
+            </div>
+            <div class="body">
+                <h3>Rules: </h3>
+                <p>-Setup 500 Loan</p>
+                <p>-Additional Loans</p>
+                <p>-Require Upgrade</p>
+
+            </div>
+            <div class="footer footer-color">
+                <div data-ng-show="plan4Upgrade">
+                    <button type="submit" class="upgrade-btn" data-ng-click="Upgrade('Plan4')">Upgrade</button>
+                </div>
+                <div data-ng-show="plan4Downgrade">
+                    <button type="submit" class="upgrade-btn" data-ng-click="Downgrade('Plan4')">Downgrade</button>
+                </div>
+            </div>
+        </div>
+    </div>
+            </div>
+            
+    
+    
+    
+    <br clear="all" />
+    <div class="clearfix"></div>
+
+</section>
+    </div>
+</div>

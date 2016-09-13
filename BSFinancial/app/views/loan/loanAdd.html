@@ -1,0 +1,479 @@
+﻿<section class="container form-header">
+    <div class="row">
+        <h1 class="pull-left">
+            <span class="pe-7s-note"></span>
+            <p>{{models.formTitle}}</p>
+        </h1>
+        <!-- buttons -->
+        <div class="buttons pull-right">
+            <a href="" class="green" ng-click="openNewAppDlg();">
+                <i class="fa fa-fw fa-plus"></i>
+                New Application
+            </a>
+            <a href="" class="blue" ng-click="PrintInvoice(loan.id);">
+                <i class=" fa fa-fw fa-print">
+                </i>
+                Loan Report
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="container select_app">
+    <div class="row">
+        <!--<div class="col-lg-3">-->
+        <label for="">Please Select Application :</label>
+        <!--</div>-->
+        <!--<div class="col-lg-6">-->
+
+        <ui-select ng-model="application.selected" name="application" id="application" theme="select2" class="cs-select" on-select="showApplicants($item, $model)" ng-required>
+            <ui-select-match placeholder="Select or search a application in the list..." value="{{$select.selected.id}}">
+                {{$select.selected.applicationName}}
+                <small>&lt;applicant: {{$select.selected.mainApplicant.firstName}} {{$select.selected.mainApplicant.lastName}}&gt;</small>
+            </ui-select-match>
+            <ui-select-choices repeat="item in applications | filter: $select.search">
+                <div ng-bind-html="item.applicationName | highlight: $select.search"></div>
+                <small>
+                    main applicant: <span ng-bind-html="''+ item.mainApplicant.fullName | highlight: $select.search"></span> &nbsp;- &nbsp;
+                    &lt;email: <span ng-bind-html="''+ item.mainApplicant.email | highlight: $select.search"></span>&gt;,&nbsp;
+                    &lt;mobile: <span ng-bind-html="''+ item.mainApplicant.mobile | highlight: $select.search"></span>&gt;
+                </small>
+            </ui-select-choices>
+        </ui-select>
+
+        <!--</div>-->
+        <!--<div class="col-lg-3">-->
+        <div ng-show="application.selected != null" class="buttons">
+            <a href="" ng-click="openApplicationDetail(application.selected);" class="blue pull-right">
+                Application Details
+            </a>
+        </div>
+        <!--</div>-->
+
+
+
+    </div>
+</section>
+<section class="container tabs-pannel">
+    <!-- tabpanel  -->
+    <div class="row" role="tabpanel">
+        <!-- Nav tabs -->
+        <nav class="tabs-nav">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active" ng-class="{'active':panelName=='properties'}">
+                    <a href="javascript:void(0)" ng-click="showPanel('properties')">
+                        <span class="pe-7s-home"></span> <p>Properties</p>
+                    </a>
+                </li>
+                <li ng-class="{'active':panelName=='financial'}">
+                    <a href="javascript:void(0)" ng-click="showPanel('financial')">
+                        <span class=" pe-7s-portfolio">
+                        </span><p>Financial</p>
+                    </a>
+                </li>
+                <li ng-class="{'active':panelName=='payment'}">
+                    <a href="javascript:void(0)" ng-click="showPanel('payment')">
+                        <span class="pe-7s-cash"></span><p>Payment</p>
+                    </a>
+                </li>
+                <li ng-class="{'active':panelName=='Escrow'}">
+                    <a href="javascript:void(0)" ng-click="showPanel('Escrow')">
+                        <span class="pe-7s-credit"></span><p>Escrow Disbursments</p>
+                    </a>
+                </li>
+                <li ng-class="{'active':panelName=='doc'}">
+                    <a href="javascript:void(0)" ng-click="showPanel('doc')">
+                        <span class="pe-7s-copy-file"></span><p>Documents</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" ng-show="panelName=='properties'" ng-class="{'active':panelName=='properties'}">
+                <a class="green" ng-click="openSelPropertyDlg()" href="javascript:void(0)">
+                    <i class=" fa fa-fw fa-plus">
+                    </i>
+                    Add Properties
+                </a>
+                <div ng-show="emptyProperty">
+                    <div class="col-lg-12 alert alert-danger">
+                        There still doesn't exist any properties, after submit new loan then you can add properties.
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="properties" class="table table-striped" ng-hide="emptyProperty">
+                        <thead>
+                            <tr>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('id')">#<i ng-class="{'fa fa-fw fa-sort':orderByField == 'id'}" /></a>   </th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('address')">Address<i ng-class="{'fa fa-fw fa-sort':orderByField == 'address'}" /></a> </th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('legalDescription')">Description<i ng-class="{'fa fa-fw fa-sort':orderByField == 'legalDescription'}" /></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('loanId')">Loan<i ng-class="{'fa fa-fw fa-sort':orderByField == 'loanId'}" /></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('purchasePrice')">Purchase Price<i ng-class="{'fa fa-fw fa-sort':orderByField == 'purchasePrice'}" /></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('purchaseDate')">Date<i ng-class="{'fa fa-fw fa-sort':orderByField == 'purchaseDate'}" /></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumn('offerPrice')">Sale Price<i ng-class="{'fa fa-fw fa-sort':orderByField == 'offerPrice'}" /></th>
+                                <th style="max-width:180px; width:180px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="p in filterdata=(loan.properties | orderBy : orderByField : reverseSort)">
+                                <td>{{ p.id }}</td>
+                                <td>{{ p.address }}</td>
+                                <td>{{ p.legalDescription }}</td>
+                                <td>{{ p.loanId }}</td>
+                                <td>{{ p.purchasePrice | currency }}</td>
+                                <td>{{ p.purchaseDate  | date : yyyy/MM/dd  }}</td>
+                                <td>{{ p.offerPrice | currency }}</td>
+                                <td>
+                                    <a href="javascript:void(0)" ng-click="onOpenPropertyDlg(p)"><i class="fa fa-fw fa-pencil"></i></a>
+                                   
+                                    <a ng-bootbox-confirm="Are you sure you want to delete this property?"
+                                       ng-bootbox-confirm-action="deleteProperty(p)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                   
+                </div>
+            </div>
+            <!-- tabpanel  -->
+            <div class="tab-pane" ng-show="panelName=='financial'" ng-class="{'active':panelName=='financial'}">
+                <!-- cd-form  -->
+                <div class="col-lg-12">
+                    <!-- cd-form  -->
+                    <form class="cd-form floating-labels row" name="loanForm" novalidate>
+                        <fieldset>
+                            <div class="col-lg-6">
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cdprincipal" ng-class="{'float': (loan.principal>=0)}">Principal</label>
+                                    <input type="number" name="cdprincipal" id="cd-principal" ng-model="loan.principal" ng-change="calcMonthlyPayment()" required
+                                            >
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdprincipal.$invalid">
+                                        Principal Required
+                                    </label>
+                                
+                                </div>
+
+                                <div class="icon">
+                                    <label class="cd-label" for="cd-date" ng-class="{'float':loan.beginDate != null}">Begin Date</label>
+                                    <a href="javascript:(0);">
+                                        <span class="fa fa-fw fa-calendar" ng-click="openBeginDate($event)"></span>
+                                    </a>
+                                    <input type="text" name="cddate" id="cd-date" datepicker-popup="{{format}}"
+                                           ng-model="loan.beginDate"
+                                           is-open="openedBeginDate"
+                                           datepicker-options="dateOptions"
+                                           close-text="Close">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cddate.$invalid">
+                                        Begin Date Required
+                                    </label>
+                                </div>
+
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-calendar"></span>
+                                    <label class="cd-label" for="cd-month" ng-class="{'float':loan.months >= 0}">Months</label>
+                                    <input type="number" name="cdmonth" id="cd-month" required ng-model="loan.months" ng-change="calcMonthlyPayment()">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdmonth.$invalid">
+                                        Month Required
+                                    </label>
+                                </div>
+
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cd-taxamount" ng-class="{'float':loan.escrowInsAmount >= 0}">Escrow Tax Amount</label>
+                                    <input type="number" name="cdtaxamount" id="cd-taxamount" ng-model="loan.escrowInsAmount" ng-change="calcMonthlyPayment()">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdtaxamount.$invalid">
+                                        Escrow Tax Amount Required
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span> 
+                                    <label class="cd-label float" for="cd-balance" ng-class="{'float':loan.pbalance >= 0}">Principal Balance</label>
+                                    <input type="number" name="cd-balance" id="cd-balance" required ng-model="loan.pbalance" readonly class="disabled">
+                                </div>
+
+                                <div class="icon">
+                                    <label class="cd-label" for="cd-lastdate" ng-class="{'float':loan.maturityDate != null}">Maturity Date</label>
+                                    <a href="javascript:(0);">
+                                        <span class="fa fa-fw fa-calendar" ng-click="openMaturityDate($event)"></span>
+                                    </a>
+                                    <input type="text" name="cdlastdate" value="2032/09/30" id="cd-lastdate" datepicker-popup="{{format}}"
+                                           ng-model="loan.maturityDate"
+                                           is-open="openedMaturityDate"
+                                           min-date="loan.beginDate"
+                                           datepicker-options="dateOptions"
+                                           close-text="Close">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdlastdate.$invalid">
+                                        Maturity Date Required
+                                    </label>
+                                </div>
+
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cd-rate" ng-class="{'float':loan.rate != null}">Rate</label>
+
+                                    <input type="number" name="cdrate" id="cd-rate" required ng-model="loan.rate" ng-change="calcMonthlyPayment()">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdrate.$invalid">
+                                        Rate Required
+                                    </label>
+                                </div>
+
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-credit-card"></span>
+                                    <label class="cd-label" for="cd-insamount" ng-class="{'float':loan.escrowTaxAmount >= 0}">Escrow Ins Amount</label>
+
+                                    <input type="number" name="cdinsamount" value="0" id="cd-insamount" ng-model="loan.escrowTaxAmount" ng-change="calcMonthlyPayment()">
+                                    <label class="errorreq" ng-show="showErrors && loanForm.cdinsamount.$invalid">
+                                        Escrow Ins Amount Required
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="Result 	col-lg-12">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label for="">Monthly Payment : </label>
+                                        <p>
+                                            <span class="fa fa-fw fa-dollar"></span>  {{ monthlyPayment | number : 2 }}
+                                            <!--{{ loan.principal * (  (loan.rate / 100) * (1 - (loan.rate/100)) / ((1 + (loan.rate/100))-1)  )  | number:2 }}-->
+                                        </p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="">
+                                            Escrow Balance :
+                                        </label>
+                                        <p>
+                                            <span class="fa fa-fw fa-dollar"></span> 
+                                            {{escrowBalanace | number: 2}}
+                                        </p>
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset> <hr />
+                        <fieldset>
+                            <div class="col-lg-4 margin-b0">
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cd-equality" ng-class="{'float':loan.equity >= 0}">Equity</label>
+
+                                    <input type="number" name="cd-equality" id="cd-equality" value="0" required ng-model="loan.equity">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 margin-b0">
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cd-debt" ng-class="{'float':loan.debt >= 0}">Debt</label>
+                                    <input type="number" name="cd-debt" id="cd-debt" value="0" required ng-model="loan.debt">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 margin-b0">
+                                <div class="icon">
+                                    <span class="fa fa-fw fa-dollar"></span>
+                                    <label class="cd-label" for="cd-rate" ng-class="{'float':loan.debtRate >= 0}">Rate</label>
+                                    <input type="text" name="cd-rate" id="cd-rate" value="0" required ng-model="loan.debtRate">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 margin-0 form-btm">
+                                <!-- checkbox -->
+                                <ul class="cd-form-list pull-left">
+                                    <li>
+                                        <input type="checkbox" id="cd-checkbox-1" ng-model="loan.variable">
+                                        <label for="cd-checkbox-1">Variable</label>
+                                    </li>
+                                </ul>
+                               
+                            </div>
+                        </fieldset>
+                    </form>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <!-- tabpanel  -->
+            <div class="tab-pane" ng-show="panelName=='payment'" ng-class="{'active':panelName=='payment'}">
+                <!-- table responsive -->
+                <a class="green" ng-show="editMode" ng-click="openPaymentDlg(null)" href="">
+                    <i class="fa fa-fw fa-plus"></i>
+                    Add Payment
+                </a>
+
+                <div ng-show="emptyPayment">
+                    <div class="col-lg-12 alert alert-danger">
+                        There still doesn't exist any payment history, after submit new loan then you can add payment.
+                    </div>
+                </div>
+
+
+                <div class="table-responsive" ng-hide="emptyPayment">
+                    <table id="financial" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>No.#</th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnPayment('payDate')">Date<i ng-class="{'fa fa-fw fa-sort':orderByFieldPayment == 'payDate'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnPayment('totalAmt')">Amount<i ng-class="{'fa fa-fw fa-sort':orderByFieldPayment == 'totalAmt'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnPayment('principalAmt')">Principal<i ng-class="{'fa fa-fw fa-sort':orderByFieldPayment == 'principalAmt'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnPayment('interestAmt')">Interest<i ng-class="{'fa fa-fw fa-sort':orderByFieldPayment == 'interestAmt'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnPayment('escrowAmt')">Escrow<i ng-class="{'fa fa-fw fa-sort':orderByFieldPayment == 'escrowAmt'}"></i></a></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in paymentsTemp = ((PaymentFilter = ( loan.payments | filter: searchPayment | orderBy: orderByFieldPayment : reverseSortPayment ))
+                                 |  offset:( pager.currentPage-1 )  * pager.maxSize| limitTo: pager.maxSize) ">
+                                <td>{{($index + 1 )+ ((pager.currentPage-1) * pager.maxSize)}}</td>
+                                <td>{{ item.payDate | date:'yyyy-MM-dd' }}</td>
+                                <td>{{ item.totalAmt | currency }}</td>
+                                <td>{{ item.principalAmt | currency }}</td>
+                                <td>{{ item.interestAmt | currency }}</td>
+                                <td>{{ item.escrowAmt | currency }}</td>
+                                <td>
+                                    <a href="javascript:void(0)" ng-click="openPaymentDlg(item)"><i class="fa fa-fw fa-pencil"></i></a>&nbsp;&nbsp;
+                                    <a href="javascript:void(0)"
+                                       ng-bootbox-confirm="Are you sure you want to delete this payment?"
+                                       ng-bootbox-confirm-action="deletePayment(item)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-fw  fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+
+                    <div class="row">
+                        <nav class="col-lg-12">
+                            <pagination ng-model="pager.currentPage"
+                                        total-items="loan.payments.length"
+                                        max-size="pager.noOfButtons"
+                                        items-per-page="pager.maxSize"
+                                        boundary-links="false" ng-change="onSelectPagePayment()"
+                                        class="pagination pull-right" previous-text="&laquo;" next-text="&raquo;">
+                            </pagination>
+                        </nav>
+                    </div>
+
+                    <!-- button  -->
+                    <!--<div class="buttons pull-right">
+                        <a class="blue" href="">
+                            <i class="fa fa-fw fa-arrow-left"></i>
+                            Back
+                        </a>
+                        <a class="green" href="">
+                            <i class="fa fa-fw fa-check-circle"></i>
+                            Save
+                        </a>
+                    </div>-->
+                </div>
+            </div>
+            <!-- tabpanel  -->
+            <div class="tab-pane" ng-show="panelName=='Escrow'" ng-class="{'active':panelName=='Escrow'}">
+                <a class="green" ng-show="editMode" ng-click="openDisbursementDlg(null)" href="">
+                    <i class="fa fa-fw fa-plus"></i>
+                    Add Disbursements
+                </a>
+                <div class="col-lg-12 alert alert-danger" ng-show="emptyDisbursement">
+                    There still doesn't exist any disbursement history, after submit new loan then you can add disbursement.
+                </div>
+                <div ng-hide="emptyDisbursement">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnEscrow('payDate')">Date<i ng-class="{'fa fa-fw fa-sort':orderByFieldEscrow == 'payDate'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnEscrow('payee')">Payee<i ng-class="{'fa fa-fw fa-sort':orderByFieldEscrow == 'payee'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnEscrow('amount')">Amount<i ng-class="{'fa fa-fw fa-sort':orderByFieldEscrow == 'amount'}"></i></a></th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="de in paymentsTemp = ((PaymentFilter = ( loan.disbursements | filter: searchEscrow | orderBy: orderByFieldEscrow : reverseSortEscrow ))) ">
+                                <td>{{$index + 1 }}</td>
+                                <td>{{ de.payDate  | date : yyyy/MM/dd }}</td>
+                                <td>{{ de.payee }}</td>
+                                <td>{{ de.amount | currency }}</td>
+                                <td>
+                                    <a href="javascript:void(0)" ng-click="openDisbursementDlg(de)"><i class="fa fa-fw fa-pencil"></i></a>&nbsp;&nbsp;
+                                    <a href="javascript:void(0)"
+                                       ng-bootbox-confirm="Are you sure you want to delete this disbursements?"
+                                       ng-bootbox-confirm-action="deleteDisbursement(de)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-fw  fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- tabpanel  -->
+            <div role="tabpanel" class="tab-pane" ng-show="panelName=='doc'" ng-class="{'active':panelName=='doc'}">
+                <a class="green" ng-click="openDocumentDlg()" ng-show="editMode">
+                    <i class="fa fa-fw fa-plus"></i>
+                    Add Documents
+                </a>
+                <div ng-show="emptyDocument">
+                    <div class="col-lg-12 alert alert-danger">
+                        There still doesn't exist any documents, after submit new loan then you can add documents.
+                    </div>
+                </div>
+                <!-- table responsive -->
+                <div class="table-responsive" ng-hide="emptyDocument">
+                    <table id="financial" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#Id</th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnDoc('description')">Description<i ng-class="{'fa fa-fw fa-sort':orderByFieldDoc == 'description'}"></i></a></th>
+                                <th><a href="javascript:void(0)" ng-click="sortByColumnDoc('loanId')">Loan<i ng-class="{'fa fa-fw fa-sort':orderByFieldDoc == 'loanId'}"></i></a></th>
+                                <th>download</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="d in paymentsTemp = ((PaymentFilter = ( loan.documents | filter: searchDoc | orderBy: orderByFieldDoc : reverseSortDoc ))) ">
+                                <td>{{ d.id }}</td>
+                                <td>{{ d.description }}</td>
+                                <td>{{ d.loanId }}</td>
+                                <td> <a target="_self" href="{{d.filePath}}" download="{{d.description}}"> <i class="fa fa-fw fa-download"></i></a></td>
+                                <td>
+                                    <a href="javascript:void(0)"
+                                       ng-bootbox-confirm="Are you sure you want to delete this document?"
+                                       ng-bootbox-confirm-action="deleteDocument(d)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-fw  fa-trash-o"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- button  -->
+
+                </div>
+                <!-- End table responsive -->
+            </div>
+            <!-- End tabpanel -->
+
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="buttons pull-right">
+
+        <a class="blue" href="javascript:void(0)" onclick="window.history.back();">
+            <i class="fa fa-times"></i>
+            Cancel
+        </a>
+        <a class="green" href="javascript:void(0)" ng-click="submitLoan(loanForm)" ng-disabled="sending" ladda="submitting" data-style="expand-right">
+            <i class="fa fa-fw fa-check-circle">
+            </i>
+            {{models.btnSubmitTitle}}
+        </a>
+    </div>
+</footer>

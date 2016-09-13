@@ -1,0 +1,241 @@
+﻿<style type="text/css">
+    .mainApplicant td {
+        background-color: #d2eb93;
+    }    
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="headline"><h2>{{models.formTitle}}</h2></div>
+    </div>
+
+    <div class="col-md-12">
+        <form action="" id="applicationForm" name="applicationForm" class="sky-form">
+            <header>
+                <div class="row">
+                    <div class="col col-3">
+                        <h3>Application Name</h3>
+                    </div>
+                    <div class="col col-5">
+                        <label class="input">
+                            <input type="text" name="applicationName" id="applicationName" ng-model="application.applicationName">
+                        </label>
+                    </div>
+                    <div class="col col-4">
+                        <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-click="openSelApplicantDlg()"><i class="fa fa-plus"></i> Add applicant</button>
+                    </div>
+                </div>
+            </header>
+            <fieldset>
+                <div class="panel panel-grey margin-bottom-40">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Applicant List</h3>
+                    </div>
+                    <div ng-show="emptyApplicant">
+                        <div class="panel-body">
+                            <p>Ned to add at least one applicant</p>
+                        </div>
+                    </div>
+                    <table class="table invoice-table" ng-hide="emptyApplicant">
+                        <thead>
+                            <tr>
+                                <th>Main Applicant</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>SSN</th>
+                                <th style="max-width:150px; width:150px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="i in selectedApplicants track by i.id" ng-class="{mainApplicant: i.id === mainApplicant.id}">
+                                <td>
+                                    <label class="radio" >
+                                        <input type="radio" ng-click="selectMainApplicant(i)" name="radio"><i class="rounded-x"></i> <label ng-show="mainApplicant.id === i.id">Main <i class="fa fa-check" style="color:#5f810a"></i></label>
+                                    </label>
+                                </td>
+                                <td>{{ i.firstName }}</td>
+                                <td>{{ i.lastName }}</td>
+                                <td>{{ i.email }}</td>
+                                <td>{{ i.phone }}</td>
+                                <td>{{ i.ssn }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-xs"
+                                            ng-bootbox-confirm="When you remove this applicant, all of the addresses and employments history of this applicant will be deleted automatically.<br>Are you sure you want to remove this applicant?"
+                                            ng-bootbox-confirm-action="removeApplicant($index)"
+                                            ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+
+            <header>
+                Address
+                <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openAddrDlg(null)"><i class="fa fa-plus"></i> Add Address</button>
+            </header>
+            <fieldset>
+                <div class="panel panel-grey margin-bottom-40">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Address List</h3>
+                    </div>
+                    <div ng-show="emptyAddr">
+                        <div class="panel-body">
+                            <p>Previous addresses have not been entered.  Click "Add Address" to enter addresses.</p>
+                        </div>
+                    </div>
+                    <table class="table table-striped invoice-table" ng-hide="emptyAddr">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Address</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Zip</th>
+                                <th class="hidden-md">Own/Rent</th>
+                                <th class="hidden-md">Rent Payment</th>
+                                <th>How Long?</th>
+                                <th style="max-width:150px; width:150px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="i in application.addrs">
+                                <td>{{ i.applicant.firstName }} {{ i.applicant.lastName }}</td>
+                                <td>{{ i.street }}</td>
+                                <td>{{ i.city }}</td>
+                                <td>{{ i.state }}</td>
+                                <td>{{ i.zipCode }}</td>
+                                <td class="hidden-md">{{ i.ownRent }}</td>
+                                <td class="hidden-md">{{ i.monthlyPay }}</td>
+                                <td>{{ i.howLong }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-xs" ng-click="openAddrDlg(i)"><i class="fa fa-edit"></i> Edit</button>&nbsp;&nbsp;
+                                    <button class="btn btn-danger btn-xs"
+                                       ng-bootbox-confirm="Are you sure you want to delete this address?"
+                                       ng-bootbox-confirm-action="deleteAddr(i)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+
+            <header>
+                Employment
+                <button class="btn-u btn-brd rounded btn-u-green btn-u-sm" style="float:right;" ng-show="editMode" ng-click="openEmpDlg(null)"><i class="fa fa-plus"></i> Add Employment</button>
+            </header>
+            <fieldset>
+                <div class="panel panel-grey margin-bottom-40">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Employment List</h3>
+                    </div>
+                    <div ng-show="emptyEmp">
+                        <div class="panel-body">
+                            <p>Employment history has not been entered.  Click "Add Employment" to enter employment history.</p>
+                        </div>
+                    </div>
+                    <table class="table table-striped invoice-table" ng-hide="emptyEmp">
+                        <thead>
+                            <tr>
+                                <th>Applicant</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Phone</th>
+                                <!--<th>Fax</th>
+                                <th class="hidden-md">City</th>
+                                <th class="hidden-md">State</th>
+                                <th class="hidden-md">Zip</th>-->
+                                <th class="hidden-md">Position</th>
+                                <th>Hourly Rate</th>
+                                <th>Monthly Income</th>
+                                <th style="max-width:150px; width:150px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="i in application.employments">
+                                <td>{{ i.applicant.firstName }} {{ i.applicant.lastName }}</td>
+                                <td>{{ i.name }}</td>
+                                <td>{{ i.email }}</td>
+                                <td>{{ i.address }}</td>
+                                <td>{{ i.phone }}</td>
+                                <!--<td>{{ i.fax }}</td>
+                                <td class="hidden-md">{{ i.city }}</td>
+                                <td class="hidden-md">{{ i.state }}</td>
+                                <td class="hidden-md">{{ i.zip }}</td>-->
+                                <td class="hidden-md">{{ i.position }}</td>
+                                <td>{{ i.hourlySalary }}</td>
+                                <td>{{ i.annualIncome }}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-xs" ng-click="openEmpDlg(i)"><i class="fa fa-edit"></i> Edit</button>&nbsp;&nbsp;
+                                    <button class="btn btn-danger btn-xs"
+                                       ng-bootbox-confirm="Are you sure you want to delete this employment?"
+                                       ng-bootbox-confirm-action="deleteEmploy(i)"
+                                       ng-bootbox-confirm-action-cancel="">
+                                        <i class="fa fa-trash-o"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+
+            <input type="hidden" id="id" name="id" ng-model="application.id" />
+            <footer>
+                <button type="button" ng-click="submitApplication()" ng-disabled="sending" class="btn-u btn-brd rounded btn-u-sea"><i class="fa fa-check"></i> {{models.btnSubmitTitle}}</button>
+                <button class="btn-u btn-brd rounded btn-u-default btn-u-sm" type="button" onclick="window.history.back();"><i class="fa fa-mail-reply"></i> Back</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#applicationForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        applicationName:
+                        {
+                            required: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        applicationName:
+                        {
+                            required: 'Please enter application name'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<BSFinancial.Data.Company>
+@{
+    ViewBag.Title = "Home Page";
+    ViewBag.InitModule = "BSFinancialApp";
+}
+
+@section styles {
+
+    <!--My Theme-->
+
+<link href="~/Content/theme/css/responsive-custom.css" rel="stylesheet" />
+<link href="~/Content/theme/css/pe-icon-7-stroke.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/content/Template/plugins/datatables/media/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="~/content/Template/plugins/datatables-responsive/css/dataTables.responsive.css">
+    <link rel="stylesheet" href="~/content/Template/plugins/angular-datatables/datatables.bootstrap.min.css">
+    <!--
+      Select2 theme
+      Bootstrap 3 theme from https://github.com/fk/select2-bootstrap-css
+    -->
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="http://fk.github.io/select2-bootstrap-css/css/select2-bootstrap.css">
+
+    <link href="~/Content/theme/css/style.css" rel="stylesheet" />
+
+
+}
+
+@section Scripts {
+
+
+  
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAnM9eDhXm80WypQ6BQZDYCM2hcRsyoTuY&sensor=false"></script>
+    <!-- For Angular Datatable -->
+    <script src="~/Content/Template/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/Template/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
+
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.min.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.util.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.options.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.factory.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.renderer.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.bootstrap.options.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.bootstrap.js"></script>
+    <script src="~/Content/Template/plugins/angular-datatables/angular-datatables.directive.js"></script>
+    <script src="~/Scripts/angular-file-upload.js"></script>
+    <script src="~/Scripts/angular-animate.min.js"></script>
+    <script src="~/Scripts/angular-touch.min.js"></script>
+    
+    <!-- For Angular Select2 -->
+    <script src="~/Content/Template/plugins/angular-select/select.min.js"></script>
+
+    <!-- Load app main script -->
+    <script src="app/app.js?v=2"></script>
+    <!-- Load services -->
+    <script src="app/services/authInterceptorService.js?v=2"></script>
+    <script src="app/services/authService.js?v=2"></script>
+    <script src="app/services/tokensManagerService.js?v=2"></script>
+    <script src="app/services/inquiryService.js?v=2"></script>
+    <script src="app/services/loanService.js?v=2"></script>
+    <script src="app/services/applicantService.js?v=2"></script>
+    <script src="app/services/applicationService.js?v=2"></script>
+    <script src="app/services/notificationService.js?v=2"></script>
+    <script src="app/services/userService.js?v=2"></script>
+    <script src="app/services/paymentService.js?v=2"></script>
+    <script src="app/services/propertyService.js?v=2"></script>
+    <script src="app/services/propertyProposalService.js?v=2"></script>
+    <script src="app/services/prospectsService.js?v=2"></script>
+    <script src="app/directives/tabui.js?v=2"></script>
+    <script src="app/services/fundService.js?v=2"></script>
+    <script src="app/services/investorService.js?v=2"></script>
+    <script src="app/services/subscriptionService.js"></script>
+
+    <script src="app/directives/fileModel.js?v=2"></script>
+    <script src="app/directives/rating.js?v=2"></script>
+    <script src="app/services/fileuploadService.js?v=2"></script>
+    <!-- Load controllers -->
+    <script src="app/controllers/indexController.js?v=2"></script>
+    <script src="app/controllers/homeController.js?v=2"></script>
+    <script src="app/controllers/loginController.js?v=2"></script>
+    <script src="app/controllers/signupController.js?v=2"></script>
+    <script src="app/controllers/refreshController.js?v=2"></script>
+    <script src="app/controllers/tokensManagerController.js?v=2"></script>
+    <script src="app/controllers/associateController.js?v=2"></script>
+    <script src="app/controllers/inquiryController.js?v=2"></script>
+    <script src="app/controllers/loanController.js?v=2"></script>
+    <script src="app/controllers/paymentController.js?v=2"></script>
+    <script src="app/controllers/applicantController.js?v=2"></script>
+    <script src="app/controllers/applicationController.js?v=2"></script>
+    <script src="app/controllers/userController.js?v=2"></script>
+    <script src="app/controllers/propertyController.js?v=2"></script>
+    <script src="app/controllers/propertyProposalController.js?v=2"></script>
+    <script src="app/controllers/prospectsController.js?v=2"></script>
+    <script src="app/controllers/proposalpropertyController.js?v=2"></script>
+    <script src="app/controllers/fundController.js?v=2"></script>
+    <script src="app/controllers/investorController.js?v=2"></script>
+    <script src="app/controllers/subscriptionController.js"></script>
+    <script src="~/Scripts/angular-idle.js"></script>
+
+      <!--My Theme JS-->
+<script src="~/Content/theme/js/custom.js"></script>
+
+}
+
+<div ng-view class="animated"></div>

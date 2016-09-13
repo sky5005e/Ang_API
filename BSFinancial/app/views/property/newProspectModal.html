@@ -1,0 +1,134 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline"><h2>{{models.formTitle}}</h2></div>
+    </div>
+
+    <div class="col-md-12">
+        <form action="" id="prospectForm" name="prospectForm" class="sky-form">
+            <fieldset>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">First Name</label>
+                        <label class="input">
+                            <input type="text" name="firstName" id="firstName" ng-model="prospect.firstName">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Last Name</label>
+                        <label class="input">
+                            <input type="text" name="lastName" id="lastName" ng-model="prospect.lastName">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Company</label>
+                        <label class="input">
+                            <input type="text" name="company" id="company" ng-model="prospect.company">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Email</label>
+                        <label class="input">
+                            <input type="text" name="email" id="email" ng-model="prospect.email">
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Phone</label>
+                        <label class="input">
+                            <input type="text" name="phone" id="phone" ng-model="prospect.phone">
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+            <input type="hidden" id="id" name="id" ng-model="prospect.id" />
+            <footer>
+                <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="submitNewProspects()">{{titleBtnSave}}</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#prospectForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        firstName:
+                        {
+                            required: false
+                        },
+                        lastName:
+                        {
+                            required: false
+                        },
+                        phone:
+                        {
+                            required: true
+                        },
+                        email:
+                        {
+                            required: true,
+                        },
+                        company:
+                        {
+                            required: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        firstNme:
+                        {
+                            required: 'Please enter first name'
+                        },
+                        lastName:
+                        {
+                            required: 'Please enter last name'
+                        },
+                        phone:
+                        {
+                            required: 'Please enter phone'
+                        },
+                        email:
+                        {
+                            required: 'Please enter email'
+                        },
+                        company:
+                        {
+                            required: 'Please enter company'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

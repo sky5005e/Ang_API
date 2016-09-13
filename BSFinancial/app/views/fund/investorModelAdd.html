@@ -1,0 +1,154 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline"><h2>{{models.formTitle}}</h2></div>
+    </div>
+
+
+    <div class="col-md-12">
+        <form action="" id="investorSaveForm" name="investorSaveForm" class="sky-form">
+            <header>Please input investor information</header>
+            <fieldset>
+
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">First name</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-user"></i>
+                            <input type="text" name="firstname" id="firstname" ng-model="investor.firstName">
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">Last name</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-user"></i>
+                            <input type="text" name="lastname" id="lastname" ng-model="investor.lastName">
+                        </label>
+                    </section>
+                </div>
+
+                <div class="row">
+                    <section class="col col-4">
+                        <label class="label">Email</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-envelope"></i>
+                            <input type="text" name="email" id="email" ng-model="investor.email">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">SSN / Tax ID</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-asterisk"></i>
+                            <input type="text" name="ssn" id="ssn" ng-model="investor.ssn">
+                        </label>
+                    </section>
+
+                    <section class="col col-4">
+                        <label class="label">Phone</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-phone"></i>
+                            <input type="text" name="phone" id="phone" ng-model="investor.phone">
+                        </label>
+                    </section>
+                </div>
+                <div class="row">
+                    <section class="col col-4">
+                        <label class="label">Shares</label>
+                        <label class="input">
+                            <input type="text" name="shares" id="shares" ng-model="investor.shares">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">Amount Paid</label>
+                        <label class="input">
+                            <input type="text" name="amountpaid" id="amountpaid" ng-model="investor.amountPaid">
+                        </label>
+                    </section>
+
+                </div>
+            </fieldset>
+            <input type="hidden" id="id" name="id" ng-model="investor.id" />
+            <input type="hidden" id="id" name="id" ng-model="investor.fundInvestorId" />
+            <footer>
+                <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="submitFundInvestor();">{{titleBtnSave}}</button>
+                <button class="btn btn-warning" ng-click="cancel();">Cancel</button>
+            </footer>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+
+            //Validation
+            initValidation: function () {
+                $("#investorSaveForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        firstname:
+                        {
+                            required: true
+                        },
+                        lastname:
+                        {
+                            required: true
+                        },
+                        ssn:
+                        {
+                            required: true
+                        },
+                        email:
+                        {
+                            required: false,
+                            email: true
+                        },
+                        phone:
+                        {
+                            required: false
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        firstname:
+                        {
+                            required: 'Please enter first name'
+                        },
+                        lastname:
+                        {
+                            required: 'Please enter last name'
+                        },
+                        ssn:
+                        {
+                            required: 'Please enter ssn'
+                        },
+                        mobile:
+                        {
+                            required: 'Please enter mobile number'
+                        },
+                        phone:
+                        {
+                            required: 'Please enter phone number'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

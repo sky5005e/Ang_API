@@ -1,0 +1,200 @@
+﻿
+<form action="" id="paymentForm" class="sky-form">
+
+    <div class="modal-body">
+
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong>
+                    <span class="ti ti-calendar"></span>&nbsp;Please input payment info
+                </strong>
+            </div>
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h2 class="heading-sm text-center">Principal<br />Balance</h2>
+                        <p class="text-primary text-center">{{pbalance | number:2}}</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <h2 class="heading-sm text-center">Interest<br />Rate</h2>
+                        <p class="text-primary text-center">{{prate | number:2}}</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <h2 class="heading-sm text-center">Escrow<br />Ins Amount</h2>
+                        <p class="text-primary text-center">{{pescinsamt | number:2}}</p>
+                    </div>
+                    <div class="col-sm-3">
+                        <h2 class="heading-sm text-center">Escrow<br />Tax Amount</h2>
+                        <p class="text-primary text-center">{{pesctaxamt | number:2}}</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Payment date</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input type="text" name="payDate" id="payDate"
+                                   placeholder="Payment date"
+                                   ng-focus="openPaymentDate($event)"
+                                   datepicker-popup="{{format}}"
+                                   ng-model="payment.payDate"
+                                   is-open="openedPaymentDate"
+                                   min-date="minDate"
+                                   datepicker-options="dateOptions"
+                                   close-text="Close" />
+                            <b class="tooltip tooltip-bottom-right">Needed to select payment date</b>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Total Payment</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-dollar"></i>
+                            <input type="number" name="totalAmt" id="totalAmt" ng-model="payment.totalAmt" ng-change="calcPayBreakdown()" placeholder="Total Payment">
+                            <b class="tooltip tooltip-bottom-right">Total paid by borrower</b>
+                        </label>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Principal</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-dollar"></i>
+                            <input type="number" name="principalAmt" id="principalAmt" ng-model="payment.principalAmt" placeholder="Principal amount">
+                            <b class="tooltip tooltip-bottom-right">Amount of payment applied towards Principal</b>
+                        </label>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="label">Interest</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-dollar"></i>
+                            <input type="number" name="interestAmt" id="interestAmt" ng-model="payment.interestAmt" placeholder="Interest amount">
+                            <b class="tooltip tooltip-bottom-right">Amount or payment applied towards interest</b>
+                        </label>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="label">Escrow </label>
+                        <label class="input">
+                            <i class="icon-append fa fa-dollar"></i>
+                            <input type="number" name="escrowAmt" id="escrowAmt" ng-model="payment.escrowAmt" placeholder="Escrow amount">
+                            <b class="tooltip tooltip-bottom-right">Amount to Escrow</b>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label class="label">Difference between total Paid and applied values</label>
+                        {{ payment.totalAmt - (payment.principalAmt + payment.interestAmt + payment.escrowAmt) | number:2}}
+                    </div>
+                </div>
+                <input type="hidden" id="loanId" name="loanId" ng-model="payment.loanId" />
+                <input type="hidden" id="id" name="id" ng-model="payment.id" />
+                <div class="divider"></div>
+                <div class="divider"></div>
+                
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitPayment()">{{titleBtnSave}}</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#paymentForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        payDate:
+                        {
+                            required: true,
+                        },
+                        totalAmt:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        principalAmt:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        interestAmt:
+                        {
+                            required: true,
+                            number: true
+                        },
+                        escrowAmt:
+                        {
+                            required: true,
+                            number: true
+                        }
+                    },
+
+                    // Messages for form validation
+                    messages:
+                    {
+                        payDate:
+                        {
+                            required: 'Please enter some date'
+                        },
+                        totalAmt:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        principalAmt:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        interestAmt:
+                        {
+                            required: 'Please enter some number'
+                        },
+                        escrowAmt:
+                        {
+                            required: 'Please enter some number'
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>
+
+
+
+
+
+

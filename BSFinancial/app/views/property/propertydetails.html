@@ -1,0 +1,149 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="headline">
+            <h2>Property Detials Info</h2>
+        </div>
+    </div>
+
+    <div class="progress progress-striped active" data-ng-show="isBusy">
+        <div class="bar" style="width: 100%;"></div>
+    </div>
+
+    <div class="col-md-12 margin-bottom-20">
+        <a class="btn-u" ng-click="GetInfoView()"><i class="fa fa-info"></i> Info View</a>
+        <a class="btn-u" ng-click="GetMapView()"><i class="fa fa-map-marker"></i> Map View</a>
+        <a class="btn-u" ng-click="GetPhotoView()"><i class="fa fa-table"></i> Photos </a>
+    </div>
+    <div class="col-md-12" ng-show="infoView">
+        <form action="" id="propertyinfoForm" name="propertyinfoForm" class="sky-form">
+            <fieldset>
+
+                <label class="label">Legal Description</label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <textarea rows="2" class="form-control" id="legalDescription" name="legalDescription"
+                                  ng-model="property.legalDescription"></textarea>
+                    </div>
+                </div>
+                <label class="label">Address</label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <textarea rows="2" class="form-control" id="address" name="address"
+                                  ng-model="property.address"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <section class="col col-4">
+                        <label class="label">City</label>
+                        <label class="input">
+                            <input type="text" name="city" id="city" ng-model="property.city">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">State</label>
+                        <label class="input">
+                            <input type="text" name="state" id="state" ng-model="property.state">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">Zip</label>
+                        <label class="input">
+                            <input type="text" name="zip" id="zip" ng-model="property.zip">
+                        </label>
+                    </section>
+                </div>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">Build Square Ft:</label>
+                        <label class="input">
+                            <input type="number" name="buildSquareFt" id="buildSquareFt" ng-model="property.buildSquareFt">
+                        </label>
+                    </section>
+                </div>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">Lot Square Ft:</label>
+                        <label class="input">
+                            <input type="number" name="lotSquareFt" id="lotSquareFt" ng-model="property.lotSquareFt">
+                        </label>
+                    </section>
+                </div>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">Asking Price:</label>
+                        <label class="input">
+                            <input type="number" name="askingPrice" id="askingPrice" ng-model="property.askingPrice">
+                        </label>
+                    </section>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-md-offset-0">
+                        <label class="label">Rate Property:</label>
+
+                    </div>
+                    <div class="col-md-12 col-md-offset-0">
+                        Location:
+                        <div star-rating rating-value="rating.location" max="5" on-rating-selected="getSelectedRating(rating)"></div>
+
+                    </div>
+                    <div class="col-md-12 col-md-offset-0">
+                        Cost:
+                        <div star-rating rating-value="rating.cost" max="5" on-rating-selected="getSelectedRating(rating)"></div>
+
+                    </div>
+                    <div class="col-md-12 col-md-offset-0">
+                        Over all: <div star-rating rating-value="rating.overall" max="5" on-rating-selected="getSelectedRating(rating)"></div>
+
+                    </div>
+                </div>
+                </fieldset>
+            <input type="hidden" id="id" name="id" ng-model="property.id" />
+
+            </form>
+            <br/>
+
+                <footer>
+                    <button class="btn btn-primary" ladda="submitting" data-style="expand-right" ng-click="SaveRatingProperty()">{{titleBtnSave}}</button>
+                    <button class="btn btn-warning" ng-click="close()">Close</button>
+                </footer>
+
+</div>
+    <div class="col-md-12" ng-show="mapView">
+        <div class="col-md-12" id="map"  style="height: 500px"></div>
+
+    </div>
+    <div class="col-md-12" ng-show="photosView">
+        <div class="margin-bottom-40">
+            <ul class="photo-list">
+                <li ng-repeat="photo in photos">
+                    <img ng-src="{{photo.filePath}}" alt="{{photo.description}}" title="{{photo.description}}" width="100%" height="100%" />
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    .rating {
+        color: #a9a9a9;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul.rating {
+        display: inline-block;
+    }
+
+    .rating li {
+        list-style-type: none;
+        display: inline-block;
+        padding: 1px;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .rating .filled {
+        color: orangered;
+    }
+</style>
+

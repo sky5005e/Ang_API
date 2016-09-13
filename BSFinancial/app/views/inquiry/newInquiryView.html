@@ -1,0 +1,144 @@
+﻿<div class="row">
+    <div class="row margin-bottom-30">
+        <div ng-app class="col-md-9 mb-margin-bottom-30">
+            <div class="headline"><h2>Loan Request</h2></div>
+            <p>If you would like to see if you qualify for a loan, please fill out the contact form below and someone will contact you about your needs.</p><br />
+
+            <form angular-validator-submit="submitInquiry()" method="post" name="inquiryForm" novalidate angular-validator>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>Name</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                               ng-model="newInquiry.Name"
+                               required-message="'This field is required.'"
+                               required>
+                    </div>
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               ng-model="newInquiry.Email"
+                               invalid-message="'Please input valid email'"
+                               required-message="'This is required'"
+                               required>
+                    </div>
+                </div>
+
+                <div class="row margin-bottom-20">
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>Looking for (New Loan, Refinance) </label>
+                        <input type="text" class="form-control" id="loanType" name="loanType"
+                               ng-model="newInquiry.LoanType"
+                               required-message="'This field is required.'"
+                               required>
+                    </div>
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>Property Cost </label>
+                        <input type="number" class="form-control" id="propertyCost" name="propertyCost"
+                               ng-model="newInquiry.PropertyCost"
+                               required-message="'This field is required.'"
+                               invalid-message="'Please input number'"
+                               required>
+                    </div>
+                </div>
+
+                <label>Phone </label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-6 col-md-offset-0">
+                        <input type="text" class="form-control" id="phone" name="phone"
+                               ng-model="newInquiry.Phone"
+                               required-message="'This field is required.'"
+                               required>
+                    </div>
+                </div>
+
+                <label>Current Address</label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <textarea rows="3" class="form-control" id="currentAddress" name="currentAddress"
+                                  ng-model="newInquiry.CurrentAddress"
+                                  required-message="'This field is required.'"
+                                  required></textarea>
+                    </div>
+                </div>
+
+                <div class="row margin-bottom-20">
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>Do you currently rent or own? </label>
+                        <input type="text" class="form-control" id="rentOwn" name="rentOwn"
+                               ng-model="newInquiry.RentOwn"
+                               required-message="'This field is required.'"
+                               required>
+                    </div>
+                    <div class="col-md-6 col-md-offset-0">
+                        <label>Monthly Rent </label>
+                        <input type="number" class="form-control" id="monthlyRent" name="monthlyRent"
+                               ng-model="newInquiry.MonthlyRent"
+                               required-message="'This field is required.'"
+                               invalid-message="'Please input number'"
+                               required>
+                    </div>
+                </div>
+
+                <label>Employed By (If self-employed, write SELF and the work you do) </label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <input type="text" class="form-control" id="employedBy" name="employedBy"
+                               ng-model="newInquiry.EmployedBy"
+                               required-message="'This field is required.'"
+                               required>
+                    </div>
+                </div>
+
+                <label>Monthly Income (average monthly income for last 12 months, if self-employed, state your income over the last 6 months) <span class="color-red">*</span></label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <input type="number" class="form-control" id="monthlyIncome" name="monthlyIncome"
+                               ng-model="newInquiry.MonthlyIncome"
+                               required-message="'This field is required.'"
+                               invalid-message="'Please input number'"
+                               required>
+                    </div>
+                </div>
+
+                <label>Comments (please provide additional information to help us make the decision)</label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12 col-md-offset-0">
+                        <textarea rows="8" class="form-control" id="message" name="message" ng-model="newInquiry.Comments"></textarea>
+                    </div>
+                </div>
+                <input type="hidden" id="companyId" name="companyId" ng-model="newInquiry.CompanyId" />
+
+                <p>
+                    <input type="submit" class="btn-u" value="{{models.btnSubmitTitle}}" ng-disabled="sending" />
+                </p>
+            </form>
+            <p> {{error}}</p>
+        </div><!--/col-md-9-->
+
+        <div class="col-md-3">
+            <!-- Contacts -->
+            <div class="headline"><h2>Contacts</h2></div>
+            <ul class="list-unstyled who margin-bottom-30">
+                <li><a href="#"><i class="fa fa-home"></i>1770 St. James Place, Suite 625, Houston, TX 77056</a></li>
+                <li><a href="#"><i class="fa fa-envelope"></i>info@singal.net</a></li>
+                <li><a href="#"><i class="fa fa-phone"></i>281.222.6660</a></li>
+                <li><a href="#"><i class="fa fa-globe"></i>http://www.singal.net</a></li>
+            </ul>
+
+            <!-- Business Hours -->
+            <div class="headline"><h2>Business Hours</h2></div>
+            <ul class="list-unstyled margin-bottom-30">
+                <li><strong>Monday-Friday:</strong> 10am to 3pm</li>
+            </ul>
+
+            <!-- Why we are? -->
+            <div class="headline"><h2>Why we are?</h2></div>
+            <p>Not everyone qualifies for financing.  Singal Properties provides quality housing and an alternative finance source to hard working indviduals and families with a history of steady employment or ability to do contract work.</p>
+            <ul class="list-unstyled">
+                <li><i class="fa fa-check color-green"></i> Fast Approvals</li>
+                <li><i class="fa fa-check color-green"></i> Long Term Notes</li>
+                <li><i class="fa fa-check color-green"></i> Competitive Rates</li>
+            </ul>
+        </div><!--/col-md-3-->
+    </div>
+</div>

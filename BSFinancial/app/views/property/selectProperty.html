@@ -1,0 +1,83 @@
+﻿<form action="" id="newPropertyForm" name="newPropertyForm" class="sky-form">
+    <div class="modal-body">
+
+        <div class="panel panel-info popup-calc">
+            <div class="panel-heading">
+                <strong>
+                    <span class="ti ti-calendar"></span>&nbsp;Please Select Properties
+                </strong>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label class="label">Property List</label>
+                        <label class="input">
+                            <ui-select multiple class="form-control" ng-model="dlg.selectedList" close-on-select="true">
+                                <ui-select-match placeholder="Select property...">{{$item.address}} {{$item.city}}</ui-select-match>
+                                <ui-select-choices repeat="property in properties | propsFilter: {address: $select.search, city: $select.search}">
+                                    <div ng-bind-html="property.address | highlight: $select.search"></div>
+                                    <small>
+                                        property: {{property.address}}
+                                    </small>
+                                </ui-select-choices>
+                            </ui-select>
+                    </div>
+
+                </div>
+                <input type="hidden" id="id" name="id" ng-model="property.id" />
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-sm-12 align-right">
+                        <button class="btn btn-primary" id="btnSave" ladda="submitting" data-style="expand-right" ng-click="submitSelectedProperty()">{{titleBtnSave}}</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-sky" style="float:left" id="btnAddNew" ng-click="goToNewProperty()"><i class="fa fa-plus"></i> Add New</button>
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+
+
+
+
+
+
+<script type="text/javascript">
+
+    var Validation = function () {
+
+        return {
+            //Validation
+            initValidation: function () {
+                $("#newPropertyForm").validate({
+                    // Rules for form validation
+                    rules:
+                    {
+                        property:
+                        {
+                            required: true,
+                        }
+                    },
+                    submitHandler: function (form) {
+                        return false;
+                    },
+
+                    // Do not change code below
+                    errorPlacement: function (error, element) {
+                        error.insertAfter(element.parent());
+                    }
+                });
+            }
+
+        };
+    }();
+
+    Validation.initValidation();
+
+</script>

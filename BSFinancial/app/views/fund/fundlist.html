@@ -1,0 +1,75 @@
+﻿<section class="container form-header">
+    <div class="row">
+        <h1 class="pull-left  col-lg-3">
+            <span class="pe-7s-graph3"></span>
+            <p>Fund List</p>
+        </h1>
+        <div class="progress progress-striped active" data-ng-show="isBusy">
+            <div class="bar" style="width: 100%;"></div>
+        </div>
+        <!-- buttons -->
+        <div class="list-view col-lg-9">
+            <form class="cd-form floating-labels">
+                <fieldset>
+                    <div class="col-lg-4">
+                        <a ng-click="openNewFundDlg();" class="green pull-right">
+                            <i class="fa fa-fw fa-plus"></i>
+                            Add Fund
+                        </a>
+                    </div>
+                    <div class="col-lg-4 form-group custom-search" ng-show="isSearch">
+                        <input type="text" class="form-control" placeholder="Search" ng-model="search">
+                        <button type="submit" class="btn-search"><span class="pe-7s-search"></span></button>
+                    </div>
+                    <div class="col-lg-4" ng-show="isFilter">
+                        <p class="cd-select icon">
+                            <span class="fa fa-fw fa-list"></span>
+                            <select ng-options="item.value as item.text for item in dataDDL" ng-model="pager.maxSize"></select>
+                        </p>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="container data-table" ng-show="isContainer">
+    <div class="table-responsive">
+        <table id="properties" class="table table-striped">
+            <thead>
+                <tr>
+                    <th><a href="javascript:void(0)" ng-click="sortByColumn('id')">No. # <i ng-class="{'fa fa-fw fa-sort':orderByField == 'id'}"></i></a> </th>
+                    <th><a href="javascript:void(0)" ng-click="sortByColumn('fundName')">Fund Name<i ng-class="{'fa fa-fw fa-sort':orderByField == 'fundName'}"></i></a></th>
+                    <th><a href="javascript:void(0)" ng-click="sortByColumn('taxId')">Tax ID<i ng-class="{'fa fa-fw fa-sort':orderByField == 'taxId'}"></i></a></th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="f in loansTemp = ((fundFilter = (funds | filter:search | orderBy: orderByField : reverseSort  )) | offset:( pager.currentPage-1 )  * pager.maxSize| limitTo: pager.maxSize)  ">
+                    <th scope="row">{{ f.id }}</th>
+                    <td>{{ f.fundName }}</td>
+                    <td>{{ f.taxId }}</td>
+                    <td>
+                        <a href="/#/editfund/{{f.id}}"><i class="fa fa-fw fa-pencil"></i></a>
+                        <a ng-bootbox-confirm="Are you sure you want to delete this fund?"
+                           ng-bootbox-confirm-action="deleteFund(f.id)"
+                           ng-bootbox-confirm-action-cancel=""><i class="fa fa-fw  fa-trash-o"></i></a>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    <div class="row">
+        <nav class="col-lg-12">
+            <pagination ng-model="pager.currentPage"
+                        total-items="addFormFilter()"
+                        max-size="pager.noOfButtons"
+                        items-per-page="pager.maxSize"
+                        boundary-links="false" ng-change="onSelectPage()"
+                        class="pagination pull-right" previous-text="&laquo;" next-text="&raquo;">
+            </pagination>
+        </nav>
+    </div>
+</section>
