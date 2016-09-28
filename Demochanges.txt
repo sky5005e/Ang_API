@@ -1,0 +1,61 @@
+public static AuthenticationProperties CreateProperties(string userName, string roles)
+        {
+            IDictionary<string, string> data = new Dictionary<string, string>
+            {
+                { "userName", userName },  { "roles", roles }
+            };
+            return new AuthenticationProperties(data);
+        }
+		
+		public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        {
+            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            
+            var userRoles = await userManager.GetRolesAsync(user.Id);
+            string roles = "Users";
+            if(userRoles.Count > 0)
+                {
+                roles = userRoles.FirstOrDefault();
+            }
+            if (user == null)
+            {
+                context.SetError("invalid_grant", "The user name or password is incorrect.");
+                return;
+            }
+
+            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+               OAuthDefaults.AuthenticationType);
+            ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+                CookieAuthenticationDefaults.AuthenticationType);
+
+            AuthenticationProperties properties = CreateProperties(user.UserName, roles);
+            AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
+            context.Validated(ticket);
+            context.Request.Context.Authentication.SignIn(cookiesIdentity);
+        }
+		
+		
+		 var _authentication = {
+        isAuth: false,
+        userName: "",
+        useRefreshTokens: false,
+        userRole : ''
+    };
+	
+	
+            _authentication.isAuth = true;
+            _authentication.userName = loginData.userName;
+            _authentication.useRefreshTokens = loginData.useRefreshTokens;
+            _authentication.userRole = response.roles;
+            deferred.resolve(response);
+			
+			 authService.login($scope.loginData).then(function (response) {
+            alert(authService.authentication.userRole);
+            if (authService.authentication.userRole == "Users")
+                $location.path('/home');
+            else
+                $location.path('/patients');
+
+        }
