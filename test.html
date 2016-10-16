@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+<form>
+<div style="margin : 100px;">
+
+
+			date:	  <input id="date_creation"  name="date_creation" type="text" class="myDateFormat" />
+				  
+				  
+				  <div class="td">
+    password: <input type="password" id="txtNewPassword" />
+</div>
+<div class="td">
+    confirm Password : <input type="password" id="txtConfirmPassword" onChange="checkPasswordMatch();" />
+</div>
+    <div class="registrationFormAlert" id="divCheckPasswordMatch">
+</div>
+				  
+  <button id="btn"  class="btn search" type="submit"> Click me</button>
+  
+   <input type="email" required /> 
+   <br/>
+   <input type="date" required/>
+   <br/>
+   
+<input id="dates_pattern3" required="" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" value="" name="dates_pattern3" list="dates_pattern3_datalist" placeholder="Try it out." type="text">
+
+
+<input type="text" pattern="\d*" />
+
+        <br />
+        <input type="submit" value="Submit Now!">
+		
+				</div>
+				<form>
+<!--End Active Goal Page-->
+<!-- Latest compiled and minified JavaScript -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	
+<script type="text/javascript">
+  $(function() {
+  $("#btn").click(function ()
+  {
+	var vl = $("#date_creation").val();
+	alert(vl);
+	isValidDate(vl);
+  });
+  });
+//  Above function can validate YYYY-MM-DD, DD-MM-YYYY date formats. You can simply extend the regular expression to validate any date format. Assume you want to validate YYYY/MM/DD, just replace "[-]" with "[-|/]".
+function isValidDate(dateString) {
+// yyyy-mm-dd
+     //   var re = /^\d{4}-\d{1,2}-\d{1,2}$/;
+  var regEx = /^\d{4}-\d{2}-\d{2}$/;
+  //return dateString.match(regEx) != null;
+   //var regex=new RegExp("([0-9]{4}[-](0[1-9]|1[0-2])[-]([0-2]{1}[0-9]{1}|3[0-1]{1})|([0-2]{1}[0-9]{1}|3[0-1]{1})[-](0[1-9]|1[0-2])[-][0-9]{4})");
+    var dateOk = regEx.test(dateString);//
+	//var dateOk = regex.test(dateString);
+    if(dateOk){
+        alert("Ok");
+    }else{
+        alert("not Ok");
+    }
+}
+
+
+function checkPasswordMatch() {
+    var password = $("#txtNewPassword").val();
+    var confirmPassword = $("#txtConfirmPassword").val();
+
+    if (password != confirmPassword)
+        $("#divCheckPasswordMatch").html("Passwords do not match!");
+    else
+        $("#divCheckPasswordMatch").html("Passwords match.");
+}
+$(document).ready(function () {
+   $("#txtNewPassword, #txtConfirmPassword").keyup(checkPasswordMatch);
+});
+
+$(function() {
+
+$("#txtNewPassword").blur( function(){
+var pwdregex = /(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+//var pwdregex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$/;
+var passwordok = pwdregex.test($("#txtNewPassword").val());
+if(passwordok)
+{
+	alert("password accepted!");
+}
+else
+{
+	alert("please input proper password");
+}
+});
+    $("#txtConfirmPassword").keyup(function() {
+	    var password = $("#txtNewPassword").val();
+        $("#divCheckPasswordMatch").html(password == $(this).val() ? "Passwords match." : "Passwords do not match!");
+    });
+
+});
+      </script>
+
+    </body>
+    </html>
