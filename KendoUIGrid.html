@@ -1,0 +1,341 @@
+@using Wellness.Entities.CustomModels
+@using Kendo.Mvc.UI
+@{
+    ViewBag.Title = "Dr Meschino's Research Reviews";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".k-grid-content").css("height", "400");
+    });
+    function addcontent()
+    {
+        window.location.href = '@Url.Action("AddResearchReview", "ContentManagement")';
+    }
+    function onDataBound(e) {
+        var tooltipConstants = Inforica.KendoUtil.TooltipConstants;
+        Inforica.KendoUtil.SetIconAndToolTipOnGridAction(tooltipConstants.Edit, $(".k-grid-Edit"));
+        Inforica.KendoUtil.SetIconAndToolTipOnGridAction(tooltipConstants.Delete, $(".k-grid-Delete"));
+        Inforica.KendoUtil.SetIconAndToolTipOnGridAction(tooltipConstants.SendEmail, $(".k-grid-Re-Send"));
+    }
+    function editMultiResearchReviews() {
+        //debugger;
+        Inforica.KendoUtil.ClearAllTooltips();
+        window.location.href = '@Url.Action("EditMultipleResearchReview", "ContentManagement")';
+    }
+    function editResearchReviews(e) {
+        //debugger;
+        Inforica.KendoUtil.ClearAllTooltips();
+        if (e != null) {
+            e.preventDefault();
+            storeGridFilterSettings("GrdResearchReview");
+            var campaignId = this.dataItem($(e.currentTarget).closest("tr")).id
+            if (e.data.commandName == 'Delete') {
+                Inforica.UI.Confirm("Are you sure you want to delete this learn and earn ?", function (result) {
+                    if (result) {
+                        var postData = [];
+                        postData.push({ name: "campaignId", value: campaignId });
+                        Inforica.Ajax.PostAsync("DeleteResearchReview", "ContentManagement", "ContentManagement", postData, function (msg) {
+                            $('#GrdResearchReview').data("kendoGrid").dataSource.read();
+                            Inforica.UI.Alert(msg.Data.Message);
+                        });
+                    }
+                });
+            }
+            else if (e.data.commandName == 'Edit') {
+                window.location.href = '@Url.Action("EditResearchReview", "ContentManagement")' + '?campaignId=' + campaignId;
+            }
+            else {
+                //Send Notification to user
+                var postData = [];
+                var contentType = this.dataItem($(e.currentTarget).closest("tr")).content_type
+
+                postData.push({ name: "id", value: campaignId });
+                postData.push({ name: "contentType", value: contentType });
+
+                window.location.href = '@Url.Action("Notification", "ContentManagement", new { area = "ContentManagement" })' + '?id=' + campaignId + '&contentType=' + contentType;
+            }
+        }
+    }
+ 
+    function displayResearchReviewPopup(message) {
+        //debugger;
+        var grid = $("#GrdResearchReview").data("kendoGrid");
+        var tr = $(message).closest("tr");
+        var data = grid.dataItem(tr);
+        
+        popUpTitle = "Content";
+        popUpMessage = "<b>" + data.content_title + "</b><br/><br/>" + data.content_desc;
+
+        $("#divResearchReviewMessage").modal('show');
+        $("#idTitle").html(popUpTitle);
+        $("#idMessage").html(popUpMessage);
+    }
+</script>
+
+<div id="divContentManagement" class="ContentManagement">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-title">Dr Meschino's Research Reviews - Articles</h1>
+            <h4 class="page-title">
+                Notes : Use the following values for the filter in specific columns or use '##' for blank records & '%%' for all records</h4>
+            <div>
+                Content Type : AR (Articles)<br />
+                Publishing Status : P(Published), UP(Unpublished) <br />
+                Processing Status : PR(Processed), UNPR(Unprocessed) <br />
+                Approving Status : Approved, Unapproved             
+            </div>
+            <div class="alignright">
+                <a href="javascript: void(0);" class="btn green" onclick="addcontent();"> Add content</a><a href="javascript: void(0);" class="btn green" onclick="editMultiResearchReviews();"> Click here for multiple updates</a> 
+            </div>
+            <br />
+            <br />
+            <br />
+            <div id="divResearchReview">
+                @(Html.Kendo().Grid<Wellness.Entities.ComplexModels.ResearchReviews>()
+                    .Name("GrdResearchReview")
+                    .Columns(column =>
+                    {
+                        column.Bound(a => a.id).Hidden();
+                        column.Bound(a => a.id).Title("#id").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(40);
+
+                        column.Bound(a => a.content_title).Title("Content").ClientTemplate(
+                            "<a href='javascript: void(0);' onclick=\"return displayResearchReviewPopup(this);\">" +
+                                "# if (content_title.length > 60) { #" +
+                                    "#: content_title.substring(0,60) #" + "..." +
+                                "# } else { #" +
+                                    "#: content_title #" +
+                                "# } #"+
+                            "</a>"
+                        ).HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(120);
+
+
+                        column.Bound(a => a.content_type).Title("Content Type").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        column.Bound(a => a.conditions_type).Title("Conditions").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(90).Format("{0:d}");
+                        column.Bound(a => a.content_url_extension).Title("Url").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        //column.Bound(a => a.dripcampign_name).Title("Drip campign").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        column.Bound(a => a.status).Title("Publishing Status").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        column.Bound(a => a.pstatus).Title("Processing status").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(50).Format("{0:d}");
+                        column.Bound(a => a.ApprovingStatus).Title("Approving Status").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(50).Format("{0:d}");
+                        column.Bound(a => a.UpdatedBy).Title("Updated By").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        column.Bound(a => a.modified).Title("Updated On").HeaderHtmlAttributes(new { @style = "white-space: normal;text-align:center;" }).Width(60).Format("{0:d}");
+                        
+                        column.Command(command =>
+                        {
+                            command.Custom("Edit").Click("editResearchReviews").HtmlAttributes(new { style = "min-width:auto;", title = "Edit" });
+                            command.Custom("Delete").Click("editResearchReviews").HtmlAttributes(new { style = "min-width:auto;", title = "Delete" });
+                            command.Custom("Re-Send").Click("editResearchReviews").HtmlAttributes(new { style = "min-width:auto;", title = "Send Notification" });
+                        })
+                        .Title("Action(s)").HeaderHtmlAttributes(new { @style = "text-align:center;" }).Width(60);
+                    })
+                    .Scrollable()   
+                    .Sortable()
+                    .Filterable(filterable => filterable
+                            .Extra(false)   
+                            .Operators(operators => operators
+                                .ForString(str => str.Clear()
+                                    .Contains("Contains")
+                                    .StartsWith("Starts with")
+                                    .IsEqualTo("Is equal to")
+                                    .EndsWith("Ends With")
+                                    .IsNotEqualTo("Is not equal to")
+                                )                                
+                            )        
+                        )
+                    .Pageable(pageable => pageable
+                        .Refresh(true)
+                        .PageSizes(new[] { 50, 100, 200, 500 })
+                        .ButtonCount(5)) 
+                    .Events(e => e.DataBound("onDataBound"))
+                    .DataSource(datasource => datasource
+                                .Ajax()
+                                .Events(events => events.Error("Inforica.KendoUtil.KendoGridErrorHandler"))
+                                        .Read(read => read.Action("ResearchReviewsArticlesGB", "ContentManagement", new { area = "ContentManagement" }))
+                                .PageSize(50)    
+                        )
+                        .AutoBind(false)
+                    .Resizable(resize => resize.Columns(true))
+                    .EnableCustomBinding(true)
+                    )
+            </div>
+            <br/>
+            <div class="alignright"><a href="javascript: void(0);" class="btn green" onclick="editMultiResearchReviews();"> Click here for multiple updates</a> </div>
+        </div>
+    </div>
+</div>
+
+<!-- Begin: Research Review Pupup window -->
+<div class="modal fade" id="divResearchReviewMessage" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 750px;">
+        <div class="modal-content modal-border">
+            <div class="inf-modal-header">
+                <a class="btn-close" data-dismiss="modal" aria-hidden="true" href="#">Close</a>
+                <span class="inf-main-heading" id="idTitle"</span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 display-text">
+                        <div id="idMessage" class="inforica-feedback-message"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="text-align: right;">
+                        <a class="btn blue button-next" data-dismiss="modal">Close</a><br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End: Research Review Pupup window -->
+
+<script>
+    $(document).ready(function () {
+        restoreGridFilterSettings("GrdResearchReview");
+    });
+</script>
+
+ 
+ 
+ 
+ [Authorize(Roles = ApplicationRole.ADMIN + "," + ApplicationRole.CONTENTMANAGEMENT + "," + ApplicationRole.SYSADMIN)]
+        [NoCache]
+        public ActionResult ResearchReviewsVideosGB([DataSourceRequest] DataSourceRequest request)
+        {
+            var result = GetResearchReview(request, "V");
+            return Json(result);
+        }
+        private DataSourceResult GetResearchReview([DataSourceRequest] DataSourceRequest request, string contentType)
+        {
+            var gridUtil = new GridUtil();
+            string sortColumn = "Date";
+            string sortOrder = "ASC";
+
+            if (request != null && request.Sorts != null && request.Sorts.Count > 0)
+            {
+                sortColumn = request.Sorts[0].Member;
+                sortOrder = (request.Sorts[0].SortDirection == ListSortDirection.Ascending) ? "ASC" : "DESC";
+            }
+
+            var pageCriteria = new ResearchReviewParams
+            {
+                StartInd = request.PageSize * (request.Page - 1) + 1,
+                EndInd = request.PageSize * request.Page,
+                PageSize = request.PageSize,
+                SortOrder = sortOrder,
+                SortColumn = sortColumn,
+                WhereClauseXML = gridUtil.GetWhereClauseXml_Kendo(request.Filters),
+                userId = MembershipUserID,
+                contentType = contentType
+            };
+
+            List<ResearchReviews> list = _contentManagementService.GetResearchReviews(ServiceLocator.Current.GetInstance<IRepositoryAsync<ResearchReviews>>(), pageCriteria);
+
+            int totalRows = 0;
+            if (list.Count > 0)
+            {
+                totalRows = list[0].TotalRows.GetValueOrDefault();
+            }
+
+            var result = new DataSourceResult
+            {
+                Data = list,
+                Total = totalRows
+            };
+            return result;
+        }
+        [Authorize(Roles = ApplicationRole.ADMIN + "," + ApplicationRole.CONTENTMANAGEMENT + "," + ApplicationRole.SYSADMIN)]
+        public ActionResult EditResearchReview(int campaignId)
+        {
+
+            BLR_campaign_details blrCampaignDetails = _contentManagementService.GetResearchReviewsById(ServiceLocator.Current.GetInstance<IRepositoryAsync<BLR_campaign_details>>(), campaignId);
+
+            var pageCriteria = new ResearchConditionSearchParam();
+            List<ResearchCondition> lstRC = _contentManagementService.GetCondtions(ServiceLocator.Current.GetInstance<IRepositoryAsync<ResearchCondition>>(), pageCriteria);
+            List<SelectListItem> _LiList = new List<SelectListItem>();
+            foreach (var item in lstRC)
+            {
+                SelectListItem Li = new SelectListItem();
+                Li.Text = item.Title;
+                Li.Value = item.id.ToString();
+                _LiList.Add(Li);
+            }
+            ViewBag.Chklist = new SelectList(_LiList, "Value", "Text");
+            var dcCriteria = new Drip_campaignSearchParam();
+
+            List<Drip_campaign> lstDC = _contentManagementService.GetDripCampaigns(ServiceLocator.Current.GetInstance<IRepositoryAsync<Drip_campaign>>(), dcCriteria);
+            List<SelectListItem> _LiDCList = new List<SelectListItem>();
+            foreach (var item in lstDC)
+            {
+                SelectListItem Li = new SelectListItem();
+                Li.Text = item.description;
+                Li.Value = item.id.ToString();
+                _LiDCList.Add(Li);
+            }
+            ViewBag.DripChklist = new SelectList(_LiDCList, "Value", "Text");
+
+            return View("ResearchReviewEditor", blrCampaignDetails);
+        }
+
+		
+		 public partial class ResearchReviews : BaseEntity
+    {
+        public int id { get; set; }
+        public string content_type { get; set; }
+        public string content_title { get; set; }
+        public string conditions_type { get; set; }
+        public string article_agetype { get; set; }
+        public string content_desc { get; set; }
+        public string content_short_desc { get; set; }
+        public string meta_title { get; set; }
+        public string content_url_extension { get; set; }
+        public string meta_keyword { get; set; }
+        public string meta_desc { get; set; }
+        public Nullable<DateTime> modified { get; set; }
+        public string status { get; set; }
+        public string pstatus { get; set; }
+        public string dripcampign_name { get; set; }
+        public string ApprovingStatus { get; set; }
+        public string articleType { get; set; }
+        public string UpdatedBy { get; set; }
+        public string url { get; set; }
+        public string video_url { get; set; }
+        public int? TotalRows { get; set; }
+        public long RowNum { get; set; } 
+    }
+
+	 public class PageCriteria : StoredProcedureParams
+    {
+        public int? StartInd { get; set; }
+        public int? EndInd { get; set; }
+        public int? PageSize { get; set; }
+        public string SortColumn { get; set; }
+        public string SortOrder { get; set; }
+        public string WhereClauseXML { get; set; }
+    }
+	 public class StoredProcedureParams
+    {
+   
+	 public SqlParameter[] AsSqlParameters()
+        {
+            List<SqlParameter> sqlParameters = new List<SqlParameter>();
+            var properties = this.GetType().GetProperties();
+            foreach (var p in properties)
+            {
+                object value = p.GetValue(this);
+
+                SqlParameter parameter = new SqlParameter("@" + p.Name, value == null ? DBNull.Value : value);
+                sqlParameters.Add(parameter);
+            }
+
+            return sqlParameters.ToArray();
+        }
+		
+		}
+		
+    public class ResearchReviewParams : PageCriteria
+    {
+        public string userId { get; set; }
+        public string contentType { get; set; }
+    }
