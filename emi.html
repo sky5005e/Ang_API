@@ -1,0 +1,74 @@
+<div class="emi-cal">
+    	<h2 class="h2">EMI Calculator - Loan on Credit Card</h2>
+        <div class="pointer"><img src="/assets/emi-calc/images/pointer.png" alt=""></div>
+        <div class="formDiv">
+        	<ul>
+            	<li>
+                	<label class="pT0">You would like to apply for</label>
+                    <div class="selBox">
+                        <div class="selVal">SmartEMI</div>
+                        <select id="loanType">
+                            <option value="1">Insta Loan</option>
+                            <option value="2">Insta Jumbo Loan</option>
+                            <option value="3">SmartEMI</option>
+                            <option value="4">Balance Transfer on EMI</option>
+                        </select>
+                    </div>
+                </li>
+                <li>
+                     <label class="widthLess">Loan Amount</label>
+        			 <input id="loanAmount" maxlength="11" value="0" type="tel">
+                </li>
+                <li>
+                	<label class="pT0">You are entering Interest Rate</label>
+                    <div class="selBox">
+                        <div class="selVal">per annum</div>
+                        <select id="rateType">
+                            <option>per annum</option>
+                            <option>per month</option>
+                        </select>
+                    </div>
+                </li>
+                <li>
+                     <label class="widthLess">Interest Rate (%)</label>
+    				 <input id="inteRate" maxlength="5" value="0" type="tel">
+                </li>
+                <li>
+                    <label>Choose your repayment tenure</label>
+   					<!-- <input type="text" id="tenureMonths" maxlength="2"/> -->
+                     <div class="selBox tenureMonths">
+                        <div class="selVal">18</div>
+                        <select id="tenureMonths"><option>Select months</option><option>6</option><option>9</option><option>12</option><option>18</option><option>24</option><option>36</option><option>48</option></select>
+                    </div>
+                </li>
+                <!--<li>
+                	 <label class="widthLess">Processing Fee (%)</label>
+    				 <input type="text" class="green" id="processingFee" value="1.00" readonly="readonly"/>
+                </li>-->
+                <li>
+                	<div class="pL12">
+                    <input value="" class="cal" type="button">
+                    <input value="" class="reset" style="display: inline;" type="button">
+                    </div>
+                </li>               
+            </ul>
+            <div class="clear"></div>
+        </div>
+        
+        <div class="totalDiv" style="display: block;">
+            <ul>
+            	<li class="col-1">Interest Rate per annum</li>
+                <li class="rate" id="totlaRateAnnum">1.10%</li>
+                
+                <li class="col-1">Interest Rate per month</li>
+                <li class="rate" id="totlaRateMonth">0.09%</li>
+                <li>EMI</li>
+                <li class="emi" id="totalEmi">444</li>
+                <li>Processing Fee</li>
+                <li class="Fee" id="totalFee">79</li>
+                <li class="pT0">Processing Fee <strong>+</strong> <p>Service tax</p></li>
+                <li class="FeeServTax" id="FeeServTax">91</li>
+            </ul>
+            <div class="clear"></div>
+        </div>
+    </div>
