@@ -1,0 +1,150 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using System.Web.Mvc.Html;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.UI.Fluent;
+
+/// <summary>
+/// Input extensions.
+/// </summary>
+public static partial class InputExtensions
+{
+    
+    //To create helper using extension method
+    public static GridBuilder<T> HicomGrid<T>(this HtmlHelper helper, string name, object filter, string controllerName, string actionName = "List") where T : class
+    {
+        var grid =  helper.Kendo().Grid<T>()
+            .HtmlAttributes(new { @class = "table" })
+            .Name(name)
+            //.Groupable()
+            .Scrollable()
+            .Sortable()
+            //.Filterable(filterable => filterable
+            //        .Extra(false)
+            //        .Operators(operators => operators
+            //            .ForString(str => str.Clear()
+            //                .Contains("Contains")
+            //                .StartsWith("Starts with")
+            //                .IsEqualTo("Is equal to")
+            //                .EndsWith("Ends With")
+            //                .IsNotEqualTo("Is not equal to")
+            //            )
+            //        )
+            //)
+            .Pageable(pageable => pageable
+                .Refresh(true)
+                .PageSizes(new[] { 50, 100, 200, 500 })
+                .ButtonCount(5)).AutoBind(true)
+            .Resizable(resize => resize.Columns(true))
+            .EnableCustomBinding(true).AutoBind(true)
+            .DataSource(datasource => datasource
+                .Ajax()
+                .Read(read => read.Action(actionName, controllerName, new { @value  = filter}))
+                .PageSize(50)
+
+            );
+
+        //grid.
+        return grid;
+
+    }
+
+    public static GridBuilder<T> HicomGrid1<T>(this HtmlHelper helper, IEnumerable<T> Model, string name, int TotalRecords) where T : class
+    {
+        //if (TotalRecords == 0)
+        //    return string.Empty;
+        //else
+
+            return helper.Kendo().Grid<T>(Model)
+                .HtmlAttributes(new { @class = "table" })
+                .Name(name)
+                .Pageable()
+                            .Sortable()
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .PageSize(10)
+                                .ServerOperation(false)
+                                .Total(TotalRecords)
+                             );
+    }
+
+
+
+    // for default column 
+        public static GridBuilder<T> AddDefaultOptions<T>(this GridBuilder<T> builder) where T : class
+        {
+            //add options
+            return builder;
+        }
+    
+//@(Html.TestCRUDGrid<ReefType>("Grid1")
+//    .BindTo(Model)
+//    .Columns(columns =>
+//           {
+//        columns.Bound(p => p.Description);
+//    })
+//   .AddDefaultOptions()
+//)
+
+}
+
+  <div>
+@if (Model.Items != null)
+{
+                    @(Html.HicomGrid1<CareHub.Portal.Data.PatientAddressAndContact>(Model.Items, "GBPatient", Model.TotalRecordsFound)
+                            .Columns(columns =>
+                            {
+                                columns.Bound(a => a.PatientId).Title("#id");
+                                columns.Bound(a => a.FirstName).Title("First Name");
+                                columns.Bound(a => a.Surname).Title("Surename");
+                            })
+                    )
+}
+</div>
+
+
+@(Html.HicomGrid<CareHub.Portal.Data.EpisodeList>("GridEpisodeList", TF,"Episode")
+                        .Columns(column =>
+                        {
+                            column.Bound(a => a.EpisodeId).Title("#id");
+                            column.Bound(a => a.EpisodeDate).Title("Date").Format("{0:d}");
+                            column.Bound(a => a.EpisodeTime).Title("Time").Format("{0:d}");
+                            column.Bound(a => a.EpisodeScheduled).Title("Schedule");
+                            column.Bound(a => a.CallReason).Title("Reason for call");
+                            column.Bound(a => a.VisitType).Title("Visit type");
+                            column.Bound(a => a.VisitReason).Title("Visit reason");
+                            column.Bound(a => a.EpisodeClinic).Title("Clinic");
+                            column.Bound(a => a.CareProgrammeDescription).Title("Primary care programme");
+                            column.Bound(a => a.Specialists).Title("Seen by");
+                            column.Bound(a => a.Attended).Title("Attended").ClientTemplate(@"<img  title=Yes alt=Yes src=http://localhost/CareHub/Portal/Web/Content/images/Icons/list_check.png>");
+                            column.Bound(a => a.EpisodeStatus).Title("Status");
+                            column.Bound(a => a.EpisodeId).HeaderHtmlAttributes(new { @class = "AddNewRecord" }).HeaderTemplate("<a title='Add episode' href=" + @Url.Action("Edit", "Episode", new { patientid = Model.PatientId.SecureQueryString() }) + "><span/></ a >").Sortable(false);
+                        }))
+                        
+                        
+                        
+                        
+                        
+        //public JsonResult List([DataSourceRequest] DataSourceRequest request, EpisodeQueryFilter filter)
+        //{
+        //    string sortColumn = "EpisodeDate";
+        //    var sortOrder = ListSortDirection.Ascending;
+        //    var pageCriteria = new EpisodeQueryFilter
+        //    {
+        //        SortBy = sortColumn,
+        //        ActivePage = request.PageSize * (request.Page - 1) + 1,
+        //        SortDirection = sortOrder,
+        //        Take = request.PageSize
+
+        //    };
+        //    EpisodeManager.PopulateModel(ReadOnlyContext, pageCriteria);
+
+        //    var result = new DataSourceResult
+        //    {
+        //        Data = pageCriteria.Items,
+        //        Total = pageCriteria.TotalRecordsFound
+        //    };
+        //    return Json(result);
+        //}
