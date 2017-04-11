@@ -1,0 +1,174 @@
+
+
+-- =============================================  
+-- Author:  Surendar Yadav  
+-- Create date: 14th March 2017  
+-- Description: Retrieve all Person information
+-- EXEC GetPersons @Forenames = 'Ellen',
+-- @StartDate = '04-01-2016'
+-- =============================================  
+CREATE PROCEDURE GetPersons
+(
+@Forenames VARCHAR(30) = NULL,
+@Surname VARCHAR(30) = NULL,
+@EmailNumber VARCHAR(100) = NULL,
+@GMCNumber VARCHAR(7) = NULL,
+@Specialty VARCHAR(100) = NULL,
+@Grade VARCHAR(50) = NULL,
+@Site VARCHAR(50) = NULL,
+@Programme VARCHAR(50) = NULL,
+@StartDate VARCHAR(50) = NULL,
+@PageNumber INT = 1,
+@PageSize INT = 20
+)
+AS
+
+BEGIN
+-- Create temp table
+CREATE TABLE #TempData
+(
+StaffID  uniqueidentifier, 
+Surname VARCHAR(30) NULL, 
+Forenames VARCHAR(30) NULL, 
+EmailNumber VARCHAR(100) NULL, 
+GMCNumber VARCHAR(10) NULL,
+SmartCardNumber VARCHAR(20) NULL,
+SmartCardIssueDate DATE NULL,
+RowNum INT,
+TotalRows INT
+)
+-- CTE 
+;WITH CTE AS ( 
+	  SELECT
+	 DISTINCT --ROW_NUMBER() OVER(ORDER BY Surname, Forenames) AS RowNum,
+	   Staff.StaffID, Staff.Surname, Staff.Forenames, Staff.EmailNumber, Staff.GMCNumber, Staff.SmartCardNumber, Staff.SmartCardIssueDate
+	  FROM 
+	  Staff Staff
+	  LEFT JOIN StaffPost AS SP ON Staff.StaffID = SP.StaffID
+      LEFT JOIN [Site] AS S ON SP.SiteCode = S.SiteCode
+      LEFT JOIN Specialty AS SLT ON SP.SpecialtyCode = SLT.SpecialtyCode
+      LEFT JOIN Grade AS G ON SP.GradeCode = G.GradeCode
+	  LEFT JOIN ProgrammeStaff AS PS ON PS.StaffID = Staff.StaffID
+	  LEFT JOIN Programme AS P ON P.ProgrammeID = PS.ProgrammeID
+
+	  WHERE Staff.[Status] = 'Current' 
+                     AND(ISNULL(@Forenames, '') = '' OR Forenames LIKE '%' + @Forenames + '%') 
+                     AND(ISNULL(@Surname, '') = ''OR Surname LIKE '%' + @Surname + '%')
+                     AND(ISNULL(@EmailNumber, '') = '' OR EmailNumber LIKE '%' + @EmailNumber + '%') 
+					 AND(ISNULL(@GMCNumber, '') = '' OR GMCNumber LIKE '%' + @GMCNumber + '%')
+					 AND(ISNULL(@Specialty, '') = ''  OR  SLT.Specialty LIKE '%' + @Specialty + '%')
+					 AND(ISNULL(@Site, '') = ''  OR  S.SiteKnownAs LIKE '%' + @Site + '%')
+					 AND(ISNULL(@Grade, '') = '' OR  G.Grade LIKE '%' + @Grade + '%')
+					 AND(ISNULL(@Programme, '') = '' OR  P.ProgrammeDescription LIKE '%' + @Programme + '%')
+					 AND(ISNULL(@StartDate, '') = '' OR  SP.StartDate = @StartDate )
+) 
+INSERT INTO #TempData (StaffID, Surname, Forenames, EmailNumber, GMCNumber, SmartCardNumber, SmartCardIssueDate, RowNum, TotalRows)
+SELECT StaffID, Surname, Forenames, EmailNumber, GMCNumber, SmartCardNumber, SmartCardIssueDate, ROW_NUMBER() OVER(ORDER BY Surname, Forenames) AS RowNum,  COUNT(StaffID) OVER() AS TotalRows FROM CTE
+
+-- Select records
+SELECT *
+FROM #TempData
+WHERE RowNum BETWEEN(@PageSize * (@PageNumber - 1)) + 1  AND(@PageSize * (@PageNumber - 1)) + @PageSize
+ORDER BY Surname, Forenames 
+
+-- Drop the temp table
+DROP TABLE #TempData
+-- Not working on SQL 2008
+--OFFSET @PageSize * (@PageNumber - 1) ROWS  FETCH NEXT @PageSize ROWS ONLY 
+
+END
+
+
+
+
+-- =============================================  
+-- Author:  Surendar Yadav  
+-- Create date: 22th March 2017  
+-- Description: Retrieve all Person evidences
+-- EXEC GetEvidences @FrameworkID = 3
+-- =============================================  
+ALTER PROCEDURE GetEvidences
+(
+@FrameworkStaffID INT = NULL,
+@PageNumber INT = 1,
+@PageSize INT = 20
+)
+AS
+
+BEGIN
+		-- SET NOCOUNT ON added to prevent extra result sets from
+        -- interfering with SELECT statements.
+        SET FMTONLY OFF;  
+
+		-- Create temp table
+		CREATE TABLE #TempData
+		(
+		Id INT,  
+		Note VARCHAR(100) NULL, 
+		Active BIT NULL, 
+		Type VARCHAR(20) NULL, 
+		ValidatedBy VARCHAR(100) NULL,
+		Evidence VARCHAR(100) NULL,
+		ValidatedDate DATE NULL,
+		RowNum INT,
+		TotalRows INT
+		)
+		-- CTE 
+
+		;WITH CTE As
+		(
+	
+			SELECT PE.PhotographEvidenceID Id, PE.Note Note, PE.Active Active,PE.ValidatedDate  ValidatedDate, PET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Photograph Evidence' Evidence  FROM PhotographEvidence PE 
+			INNER JOIN PhotographEvidenceType PET ON PET.PhotographEvidenceTypeID = PE.PhotographEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON PE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON PE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR PE.FrameworkStaffID = @FrameworkStaffID) 			
+
+			UNION
+
+			SELECT IAE.IDAddressEvidenceID Id, IAE.Note Note, IAE.Active Active, IAE.ValidatedDate  ValidatedDate, IAET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'ID Address Evidence' Evidence  FROM IDAddressEvidence IAE 
+			INNER JOIN IDAddressEvidenceType IAET ON IAET.IDAddressEvidenceTypeID = IAE.IDAddressEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON IAE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON IAE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR  IAE.FrameworkStaffID = @FrameworkStaffID ) 
+
+			UNION
+	
+			SELECT PCE.PoliceCheckEvidenceID Id, PCE.Note Note, PCE.Active Active, PCE.ValidatedDate  ValidatedDate, PCET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Police Check Evidence' Evidence  FROM PoliceCheckEvidence PCE 
+			INNER JOIN PoliceCheckEvidenceType PCET ON PCET.PoliceCheckEvidenceTypeID = PCE.PoliceCheckEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON PCE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON PCE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR PCE.FrameworkStaffID = @FrameworkStaffID) 
+
+			UNION
+
+			SELECT OHE.OccupationalHealthCheckEvidenceID Id, OHE.Note Note, OHE.Active Active, OHE.ValidatedDate  ValidatedDate, OHET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Occupational Health Check Evidence' Evidence  FROM OccupationalHealthCheckEvidence OHE 
+			INNER JOIN OccupationalHealthCheckEvidenceType OHET ON OHET.OccupationalHealthCheckEvidenceTypeID = OHE.OccupationalHealthCheckEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON OHE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON OHE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR OHE.FrameworkStaffID = @FrameworkStaffID) 
+		)
+
+		INSERT INTO #TempData (Id, Note, Active, Type, ValidatedBy, Evidence, ValidatedDate, RowNum, TotalRows)
+		SELECT Id, Note, Active, Type, ValidatedBy, Evidence, ValidatedDate, ROW_NUMBER() OVER(ORDER BY ValidatedBy) AS RowNum,  COUNT(Id) OVER() AS TotalRows FROM CTE
+
+		-- Select records
+		SELECT *
+		FROM #TempData
+		WHERE RowNum BETWEEN(@PageSize * (@PageNumber - 1)) + 1  AND(@PageSize * (@PageNumber - 1)) + @PageSize
+		ORDER BY Evidence 
+
+		-- Drop the temp table
+		DROP TABLE #TempData
+
+END
+
+
+
+
+
+
+
+
+
+

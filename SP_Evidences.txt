@@ -1,0 +1,92 @@
+
+-- =============================================  
+-- Author:  Surendar Yadav  
+-- Create date: 22th March 2017  
+-- Description: Retrieve all Person evidences
+-- EXEC GetEvidences @FrameworkStaffID = 3, @EvidenceType = 2
+-- =============================================  
+ALTER PROCEDURE GetEvidences
+(
+	@FrameworkStaffID INT = NULL,
+	@EvidenceType INT = NULL,
+	@Verified INT = NULL,
+	@PageNumber INT = 1,
+	@PageSize INT = 20
+)
+AS
+
+BEGIN
+		-- SET NOCOUNT ON added to prevent extra result sets from
+        -- interfering with SELECT statements.
+        SET FMTONLY OFF;  
+
+		-- Create temp table
+		CREATE TABLE #TempData
+		(
+			Id INT,  
+			Note VARCHAR(100) NULL, 
+			Active BIT NULL, 
+			Type VARCHAR(20) NULL, 
+			ValidatedBy VARCHAR(100) NULL,
+			Evidence VARCHAR(100) NULL,
+			ValidatedDate DATE NULL,
+			EvidenceType INT NULL,
+			RowNum INT,
+			TotalRows INT
+		)
+		-- CTE 
+
+		;WITH CTE As
+		(
+	
+			SELECT PE.PhotographEvidenceID Id, PE.Note Note, PE.Active Active,PE.ValidatedDate  ValidatedDate, PET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Photograph Evidence' Evidence, 1 EvidenceType    FROM PhotographEvidence PE 
+			INNER JOIN PhotographEvidenceType PET ON PET.PhotographEvidenceTypeID = PE.PhotographEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON PE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON PE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR PE.FrameworkStaffID = @FrameworkStaffID) 			
+
+			UNION
+
+			SELECT IAE.IDAddressEvidenceID Id, IAE.Note Note, IAE.Active Active, IAE.ValidatedDate  ValidatedDate, IAET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'ID Address Evidence' Evidence, 2 EvidenceType  FROM IDAddressEvidence IAE 
+			INNER JOIN IDAddressEvidenceType IAET ON IAET.IDAddressEvidenceTypeID = IAE.IDAddressEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON IAE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON IAE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR IAE.FrameworkStaffID = @FrameworkStaffID ) 
+
+			UNION
+	
+			SELECT PCE.PoliceCheckEvidenceID Id, PCE.Note Note, PCE.Active Active, PCE.ValidatedDate  ValidatedDate, PCET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Police Check Evidence' Evidence, 3 EvidenceType  FROM PoliceCheckEvidence PCE 
+			INNER JOIN PoliceCheckEvidenceType PCET ON PCET.PoliceCheckEvidenceTypeID = PCE.PoliceCheckEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON PCE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON PCE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR PCE.FrameworkStaffID = @FrameworkStaffID) 
+
+			UNION
+
+			SELECT OHE.OccupationalHealthCheckEvidenceID Id, OHE.Note Note, OHE.Active Active, OHE.ValidatedDate  ValidatedDate, OHET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Occupational Health Check Evidence' Evidence, 4 EvidenceType  FROM OccupationalHealthCheckEvidence OHE 
+			INNER JOIN OccupationalHealthCheckEvidenceType OHET ON OHET.OccupationalHealthCheckEvidenceTypeID = OHE.OccupationalHealthCheckEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON OHE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON OHE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR OHE.FrameworkStaffID = @FrameworkStaffID) 
+			UNION 
+			SELECT RWE.RightToWorkEvidenceID Id, RWE.Note Note, RWE.Active Active, RWE.ValidatedDate  ValidatedDate, RWET.Type, COALESCE(SU.FirstName + ' ' + SU.LastName, SU.FirstName, SU.LastName) ValidatedBy, 'Right To Work Evidence' Evidence, 5 EvidenceType  FROM RightToWorkEvidence RWE 
+			INNER JOIN RightToWorkEvidenceType RWET ON RWET.RightToWorkEvidenceTypeID = RWE.RightToWorkEvidenceTypeID
+			INNER JOIN FrameworkStaff FS ON RWE.FrameworkStaffID = FS.FrameworkStaffID
+			INNER JOIN Hicom.SecurityUser SU ON RWE.ValidatedBy = SU.SecurityUserId
+			WHERE 1=1 AND(ISNULL(@FrameworkStaffID, 1) = 1 OR RWE.FrameworkStaffID = @FrameworkStaffID) 
+		)
+
+		INSERT INTO #TempData (Id, Note, Active, Type, ValidatedBy, Evidence, ValidatedDate, EvidenceType, RowNum, TotalRows)
+		SELECT Id, Note, Active, Type, ValidatedBy, Evidence, ValidatedDate, EvidenceType, ROW_NUMBER() OVER(ORDER BY ValidatedBy) AS RowNum,  COUNT(Id) OVER() AS TotalRows FROM CTE
+
+		-- Select records
+		SELECT *
+		FROM #TempData
+		WHERE RowNum BETWEEN(@PageSize * (@PageNumber - 1)) + 1  AND(@PageSize * (@PageNumber - 1)) + @PageSize
+		AND (ISNULL(@EvidenceType, 1) = 1 OR EvidenceType = @EvidenceType ) 
+		ORDER BY Evidence 
+
+		-- Drop the temp table
+		DROP TABLE #TempData
+
+END
